@@ -16,20 +16,6 @@ type StateEventRelationship struct {
 	Relation map[string][]string `json:"relation"`
 }
 
-//type Node struct {
-//	id   string
-//	text Text
-//}
-//type Text struct {
-//	value string
-//	x     int
-//	y     int
-//}
-//type Edge struct {
-//	sourceNodeId string
-//	targetNodeId string
-//}
-
 // GraphConfigData 定义图配置数据
 type GraphConfigData struct {
 	Nodes []Node `json:"nodes"`
@@ -144,13 +130,6 @@ func GenerateFsmHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 解析请求参数
-	var ser StateEventRelationship
-	if err := json.Unmarshal(body, &ser); err != nil {
-		http.Error(w, "Error parsing request body", http.StatusBadRequest)
-		return
-	}
-
-	// 解析请求参数
 	var req GraphConfigData
 	if err := json.Unmarshal(body, &req); err != nil {
 		http.Error(w, "Error parsing request body", http.StatusBadRequest)
@@ -256,12 +235,3 @@ func CreateTemplate(states []string, events []string, relation map[string][]*Sta
 	fmt.Printf("Go file 'myFsm.go' generated successfully")
 	return nil
 }
-
-//func main() {
-//	// 设置 HTTP 路由
-//	http.HandleFunc("/generate_fsm", generateFsmHandler)
-//
-//	// 启动 HTTP 服务器
-//	fmt.Println("Server is running on port 8080...")
-//	http.ListenAndServe(":8080", nil)
-//}

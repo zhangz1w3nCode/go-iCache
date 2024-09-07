@@ -8,16 +8,14 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-// 状态枚举
+// State 定义状态
 type State string
+
+// Event 定义事件
 type Event string
 
 // 定义状态和事件
 const (
-	PayNeed State = "PayNeed"
-
-	PayPaying State = "PayPaying"
-
 	PaySuccess State = "PaySuccess"
 
 	PayFail State = "PayFail"
@@ -26,6 +24,12 @@ const (
 
 	PayStart State = "PayStart"
 
+	PayNeed State = "PayNeed"
+
+	PayPaying State = "PayPaying"
+
+	PayInvokeEvent Event = "PayInvokeEvent"
+
 	PaySuccessEvent Event = "PaySuccessEvent"
 
 	PayFailEvent Event = "PayFailEvent"
@@ -33,8 +37,6 @@ const (
 	PayCloseEvent Event = "PayCloseEvent"
 
 	PayInitEvent Event = "PayInitEvent"
-
-	PayInvokeEvent Event = "PayInvokeEvent"
 )
 
 // 定义事件和对应的状态转换
@@ -49,16 +51,6 @@ var events = fsm.Events{
 
 // 定义状态机回调...
 var callbacks = fsm.Callbacks{
-
-	"enter_" + string(PayNeed): func(_ context.Context, e *fsm.Event) {
-		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
-		return
-	},
-
-	"enter_" + string(PayPaying): func(_ context.Context, e *fsm.Event) {
-		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
-		return
-	},
 
 	"enter_" + string(PaySuccess): func(_ context.Context, e *fsm.Event) {
 		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
@@ -76,6 +68,16 @@ var callbacks = fsm.Callbacks{
 	},
 
 	"enter_" + string(PayStart): func(_ context.Context, e *fsm.Event) {
+		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
+		return
+	},
+
+	"enter_" + string(PayNeed): func(_ context.Context, e *fsm.Event) {
+		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
+		return
+	},
+
+	"enter_" + string(PayPaying): func(_ context.Context, e *fsm.Event) {
 		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
 		return
 	},
