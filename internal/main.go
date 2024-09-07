@@ -5,12 +5,14 @@ import (
 	"fmt"
 	"github.com/MoeGolibrary/go-lib/server"
 	"github.com/MoeGolibrary/go-lib/zlog"
+	engagementsvcpb "github.com/MoeGolibrary/moego-api-definitions/out/go/moego/service/engagement/v1"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"visual-state-machine/config"
+	"visual-state-machine/internal/service"
 	"visual-state-machine/internal/utils/myFsm"
 )
 
@@ -30,10 +32,10 @@ func main() {
 
 	// 初始化 server 和 services
 	s := server.NewDefaultServer()
-	//services := service.InitServices()
+	services := service.InitServices()
 
 	// 使用特定的服务注册函数来检查服务是否已实现
-	//engagementsvcpb.RegisterSettingServiceServer(s, services.SettingService)
+	engagementsvcpb.RegisterTwilioHookServiceServer(s, services.HookService)
 
 	s.Start()
 	log.Printf("server started at :%d, debug: %t", config.Get().Port, config.Get().Debug)

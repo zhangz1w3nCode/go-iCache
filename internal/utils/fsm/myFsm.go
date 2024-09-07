@@ -13,69 +13,38 @@ type Event string
 
 const(
 
-PayNeed State = "PayNeed"
+StateStart State = "StateStart"
 
-PayPaying State = "PayPaying"
+StateHandle State = "StateHandle"
 
-PaySuccess State = "PaySuccess"
-
-PayFail State = "PayFail"
-
-PayClose State = "PayClose"
-
-PayStart State = "PayStart"
+StateFinish State = "StateFinish"
 
 
 
-PayInvokeEvent Event = "PayInvokeEvent"
+DoEvent Event = "DoEvent"
 
-PaySuccessEvent Event = "PaySuccessEvent"
-
-PayFailEvent Event = "PayFailEvent"
-
-PayCloseEvent Event = "PayCloseEvent"
-
-PayInitEvent Event = "PayInitEvent"
+FinishEvent Event = "FinishEvent"
 
 )
 
 var events = fsm.Events{
-	{Name: string(PayCloseEvent), Src: []string{string(PaySuccess)}, Dst: string(PayClose)},
-	{Name: string(PayCloseEvent), Src: []string{string(PayFail)}, Dst: string(PayClose)},
-	{Name: string(PayFailEvent), Src: []string{string(PayPaying)}, Dst: string(PayFail)},
-	{Name: string(PayInitEvent), Src: []string{string(PayStart)}, Dst: string(PayNeed)},
-	{Name: string(PayInvokeEvent), Src: []string{string(PayNeed)}, Dst: string(PayPaying)},
-	{Name: string(PaySuccessEvent), Src: []string{string(PayPaying)}, Dst: string(PaySuccess)},
+	{Name: string(DoEvent), Src: []string{string(StateStart)}, Dst: string(StateHandle)},
+	{Name: string(FinishEvent), Src: []string{string(StateHandle)}, Dst: string(StateFinish)},
 }
 
 var callbacks = fsm.Callbacks{
 	
-	"enter_" + string(PayNeed): func(_ context.Context, e *fsm.Event) {
+	"enter_" + string(StateStart): func(_ context.Context, e *fsm.Event) {
 		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
 		return
 	},
 	
-	"enter_" + string(PayPaying): func(_ context.Context, e *fsm.Event) {
+	"enter_" + string(StateHandle): func(_ context.Context, e *fsm.Event) {
 		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
 		return
 	},
 	
-	"enter_" + string(PaySuccess): func(_ context.Context, e *fsm.Event) {
-		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
-		return
-	},
-	
-	"enter_" + string(PayFail): func(_ context.Context, e *fsm.Event) {
-		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
-		return
-	},
-	
-	"enter_" + string(PayClose): func(_ context.Context, e *fsm.Event) {
-		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
-		return
-	},
-	
-	"enter_" + string(PayStart): func(_ context.Context, e *fsm.Event) {
+	"enter_" + string(StateFinish): func(_ context.Context, e *fsm.Event) {
 		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
 		return
 	},

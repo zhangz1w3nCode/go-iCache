@@ -12,5 +12,6 @@ import ()
 
 // InitServices 初始化所有服务
 func InitServices() *Services {
-	return &Services{}
+	services := newServices(nil)
+	return services
 }
