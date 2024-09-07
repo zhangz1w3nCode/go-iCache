@@ -4,42 +4,41 @@ import (
 	"context"
 	"fmt"
 	"github.com/looplab/fsm"
-	"google.golang.org/grpc/codes"
+    "google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )
 
-// State 定义状态
 type State string
-
-// Event 定义事件
 type Event string
 
-// 定义状态和事件
-const (
-	PaySuccess State = "PaySuccess"
+const(
 
-	PayFail State = "PayFail"
+PayNeed State = "PayNeed"
 
-	PayClose State = "PayClose"
+PayPaying State = "PayPaying"
 
-	PayStart State = "PayStart"
+PaySuccess State = "PaySuccess"
 
-	PayNeed State = "PayNeed"
+PayFail State = "PayFail"
 
-	PayPaying State = "PayPaying"
+PayClose State = "PayClose"
 
-	PayInvokeEvent Event = "PayInvokeEvent"
+PayStart State = "PayStart"
 
-	PaySuccessEvent Event = "PaySuccessEvent"
 
-	PayFailEvent Event = "PayFailEvent"
 
-	PayCloseEvent Event = "PayCloseEvent"
+PayInvokeEvent Event = "PayInvokeEvent"
 
-	PayInitEvent Event = "PayInitEvent"
+PaySuccessEvent Event = "PaySuccessEvent"
+
+PayFailEvent Event = "PayFailEvent"
+
+PayCloseEvent Event = "PayCloseEvent"
+
+PayInitEvent Event = "PayInitEvent"
+
 )
 
-// 定义事件和对应的状态转换
 var events = fsm.Events{
 	{Name: string(PayCloseEvent), Src: []string{string(PaySuccess)}, Dst: string(PayClose)},
 	{Name: string(PayCloseEvent), Src: []string{string(PayFail)}, Dst: string(PayClose)},
@@ -49,41 +48,40 @@ var events = fsm.Events{
 	{Name: string(PaySuccessEvent), Src: []string{string(PayPaying)}, Dst: string(PaySuccess)},
 }
 
-// 定义状态机回调...
 var callbacks = fsm.Callbacks{
-
-	"enter_" + string(PaySuccess): func(_ context.Context, e *fsm.Event) {
-		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
-		return
-	},
-
-	"enter_" + string(PayFail): func(_ context.Context, e *fsm.Event) {
-		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
-		return
-	},
-
-	"enter_" + string(PayClose): func(_ context.Context, e *fsm.Event) {
-		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
-		return
-	},
-
-	"enter_" + string(PayStart): func(_ context.Context, e *fsm.Event) {
-		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
-		return
-	},
-
+	
 	"enter_" + string(PayNeed): func(_ context.Context, e *fsm.Event) {
 		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
 		return
 	},
-
+	
 	"enter_" + string(PayPaying): func(_ context.Context, e *fsm.Event) {
 		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
 		return
 	},
+	
+	"enter_" + string(PaySuccess): func(_ context.Context, e *fsm.Event) {
+		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
+		return
+	},
+	
+	"enter_" + string(PayFail): func(_ context.Context, e *fsm.Event) {
+		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
+		return
+	},
+	
+	"enter_" + string(PayClose): func(_ context.Context, e *fsm.Event) {
+		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
+		return
+	},
+	
+	"enter_" + string(PayStart): func(_ context.Context, e *fsm.Event) {
+		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
+		return
+	},
+	
 }
 
-// FsmContext 结构体...
 type FsmContext struct {
 	myFsm *fsm.FSM
 }
@@ -98,7 +96,7 @@ func (c *FsmContext) Trans(event string) (string, error) {
 	if !c.myFsm.Can(event) {
 		return "", status.Errorf(codes.InvalidArgument, "invalid event: %s", event)
 	}
-	err := c.myFsm.Event(context.Background(), event)
+	err := c.myFsm.Event(context.Background(),event)
 	if err != nil {
 		return "", err
 	}

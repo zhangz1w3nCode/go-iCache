@@ -51,11 +51,9 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-//状态枚举
 type State string
 type Event string
 
-// 定义状态和事件
 const(
 {{range.States}}
 {{.}} State = "{{.}}"
@@ -66,7 +64,6 @@ const(
 {{end}}
 )
 
-// 定义事件和对应的状态转换
 var events = fsm.Events{
 	{{- range $eventName, $pairs := .Relation}}
 	{{- range $pair := $pairs}}
@@ -75,9 +72,6 @@ var events = fsm.Events{
 	{{- end}}
 }
 
-
-
-// 定义状态机回调...
 var callbacks = fsm.Callbacks{
 	{{range .States}}
 	"enter_" + string({{.}}): func(_ context.Context, e *fsm.Event) {
@@ -87,7 +81,6 @@ var callbacks = fsm.Callbacks{
 	{{end}}
 }
 
-// FsmContext 结构体...
 type FsmContext struct {
 	myFsm *fsm.FSM
 }

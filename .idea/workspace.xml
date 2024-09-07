@@ -5,10 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ef911ac2-5b3a-4292-a47f-4566eac71d4d" name="更改" comment="feat: init project">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/visual-state-machine.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/utils/fsm/calling_fsm.go" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/internal/utils/fsm/myFsm.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/utils/fsm/myFsm.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/internal/utils/myFsm/template.go" beforeDir="false" afterPath="$PROJECT_DIR$/internal/utils/myFsm/template.go" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -25,7 +22,9 @@
     "Go 构建.Run.executor": "Debug",
     "Go 构建.go build visual-state-machine/internal.executor": "Debug",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "master"
+    "git-widget-placeholder": "master",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)"
   }
 }]]></component>
   <component name="RunManager">
