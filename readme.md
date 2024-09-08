@@ -1,9 +1,9 @@
 ## visual-state-machine💤
 
 ### 📌 Preview
-        1️⃣ visual-state-machine是一款可视化的状态机工具，可通过可视化配置状态机的状态、事件、条件、动作等信息，从而实现状态机的自动化管理
+        1️⃣ visual-state-machine-flow是一款可视化的状态机工具，可通过可视化配置状态机的状态、事件、条件、动作等信息，从而实现状态机的自动化管理
         
-        2️⃣ visual-state-machine····
+        2️⃣ visual-state-machine-flow····
 
 ### 📌 Technology stack
         1️⃣ Go
