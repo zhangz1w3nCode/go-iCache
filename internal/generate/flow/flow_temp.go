@@ -13,6 +13,8 @@ type Event string
 
 const(
 
+Unanswered State = "Unanswered"
+
 Init State = "Init"
 
 Queue State = "Queue"
@@ -23,9 +25,9 @@ Answering State = "Answering"
 
 Answered State = "Answered"
 
-Unanswered State = "Unanswered"
 
 
+CALLING_ENQUEUE Event = "CALLING_ENQUEUE"
 
 CALLING_FINISH Event = "CALLING_FINISH"
 
@@ -36,8 +38,6 @@ CALLING_ACCEPT Event = "CALLING_ACCEPT"
 CALLING_QUEUE_HANGUP Event = "CALLING_QUEUE_HANGUP"
 
 CALLING_HANGUP Event = "CALLING_HANGUP"
-
-CALLING_ENQUEUE Event = "CALLING_ENQUEUE"
 
 )
 
@@ -51,6 +51,11 @@ var events = fsm.Events{
 }
 
 var callbacks = fsm.Callbacks{
+	
+	"enter_" + string(Unanswered): func(_ context.Context, e *fsm.Event) {
+		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
+		return
+	},
 	
 	"enter_" + string(Init): func(_ context.Context, e *fsm.Event) {
 		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
@@ -73,11 +78,6 @@ var callbacks = fsm.Callbacks{
 	},
 	
 	"enter_" + string(Answered): func(_ context.Context, e *fsm.Event) {
-		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
-		return
-	},
-	
-	"enter_" + string(Unanswered): func(_ context.Context, e *fsm.Event) {
 		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
 		return
 	},
