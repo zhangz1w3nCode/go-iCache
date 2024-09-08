@@ -6,7 +6,7 @@ require gopkg.in/yaml.v3 v3.0.1
 
 require (
 	github.com/MoeGolibrary/go-lib v0.0.0-20240905100135-c028fd707763
-	github.com/MoeGolibrary/moego-api-definitions v0.0.0-20240906062050-b84395795d92
+	github.com/MoeGolibrary/moego-api-definitions v0.0.0-20240908070001-fc51cfd86232
 	github.com/google/wire v0.6.0
 	github.com/lib/pq v1.10.9
 	github.com/looplab/fsm v1.0.2

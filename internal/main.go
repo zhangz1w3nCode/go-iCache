@@ -35,14 +35,13 @@ func main() {
 	services := service.InitServices()
 
 	// 使用特定的服务注册函数来检查服务是否已实现
-	engagementsvcpb.RegisterTwilioHookServiceServer(s, services.HookService)
+	engagementsvcpb.RegisterFlowServiceServer(s, services.FlowService)
 
 	s.Start()
 	log.Printf("server started at :%d, debug: %t", config.Get().Port, config.Get().Debug)
 
 	// 设置 HTTP 路由
 	http.HandleFunc("/generate_fsm", myFsm.GenerateFsmHandler)
-
 	// 启动 HTTP 服务器
 	fmt.Println("Server is running on port 8081...")
 	http.ListenAndServe(":8081", nil)

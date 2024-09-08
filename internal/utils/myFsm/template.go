@@ -7,38 +7,8 @@ import (
 	"net/http"
 	"os"
 	"text/template"
+	"visual-state-machine/internal/entity"
 )
-
-// StateEventRelationship 定义了状态和事件的关系
-type StateEventRelationship struct {
-	States   []string            `json:"states"`
-	Events   []string            `json:"events"`
-	Relation map[string][]string `json:"relation"`
-}
-
-// GraphConfigData 定义图配置数据
-type GraphConfigData struct {
-	Nodes []Node `json:"nodes"`
-	Edges []Edge `json:"edges"`
-}
-
-// Node 定义节点的结构
-type Node struct {
-	ID   *string `json:"id,omitempty"`
-	Text struct {
-		Value string `json:"value"`
-	} `json:"text"`
-}
-
-// Edge 定义边的结构
-type Edge struct {
-	ID           string `json:"id"`
-	SourceNodeId string `json:"sourceNodeId"`
-	TargetNodeId string `json:"targetNodeId"`
-	Text         struct {
-		Value string `json:"value"`
-	} `json:"text"`
-}
 
 // FsmGoFileTemplate 是生成的 Go 文件的模板
 const FsmGoFileTemplate = `package {{.Package}}
@@ -103,7 +73,6 @@ func (c *FsmContext) Trans(event string) (string, error) {
 }
 `
 
-// 定义 HTTP 处理函数
 func GenerateFsmHandler(w http.ResponseWriter, r *http.Request) {
 	// 设置 CORS 响应头
 	w.Header().Set("Access-Control-Allow-Origin", "*")
@@ -123,7 +92,7 @@ func GenerateFsmHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// 解析请求参数
-	var req GraphConfigData
+	var req entity.GraphConfigData
 	if err := json.Unmarshal(body, &req); err != nil {
 		http.Error(w, "Error parsing request body", http.StatusBadRequest)
 		return
@@ -133,15 +102,11 @@ func GenerateFsmHandler(w http.ResponseWriter, r *http.Request) {
 	events := ExtractEvents(req.Edges)
 	extractedRelationships := ExtractRelationships(req.Nodes, req.Edges)
 
-	fmt.Printf("状态集合: %v\n", status)
-	fmt.Printf("事件集合: %v\n", events)
-	fmt.Printf("状态和事件的关系: %v\n", extractedRelationships)
-
 	CreateTemplate(status, events, extractedRelationships)
 }
 
 // ExtractStates 提取状态集合
-func ExtractStates(nodes []Node) []string {
+func ExtractStates(nodes []entity.Node) []string {
 	states := make(map[string]bool)
 	for _, node := range nodes {
 		if node.Text.Value != "" {
@@ -156,7 +121,7 @@ func ExtractStates(nodes []Node) []string {
 }
 
 // ExtractEvents 提取事件集合
-func ExtractEvents(edges []Edge) []string {
+func ExtractEvents(edges []entity.Edge) []string {
 	events := make(map[string]bool)
 	for _, edge := range edges {
 		if edge.Text.Value != "" {
@@ -170,14 +135,9 @@ func ExtractEvents(edges []Edge) []string {
 	return eventList
 }
 
-type StatusPair struct {
-	SourceState string
-	TargetState string
-}
-
 // ExtractRelationships 提取状态和事件的关系
-func ExtractRelationships(nodes []Node, edges []Edge) map[string][]*StatusPair {
-	relationships := make(map[string][]*StatusPair)
+func ExtractRelationships(nodes []entity.Node, edges []entity.Edge) map[string][]*entity.StatusPair {
+	relationships := make(map[string][]*entity.StatusPair)
 	for _, edge := range edges {
 		sourceState := ""
 		targetState := ""
@@ -190,21 +150,16 @@ func ExtractRelationships(nodes []Node, edges []Edge) map[string][]*StatusPair {
 			}
 		}
 		if _, exists := relationships[edge.Text.Value]; !exists {
-			relationships[edge.Text.Value] = []*StatusPair{{sourceState, targetState}}
+			relationships[edge.Text.Value] = []*entity.StatusPair{{sourceState, targetState}}
 		} else {
-			relationships[edge.Text.Value] = append(relationships[edge.Text.Value], &StatusPair{sourceState, targetState})
+			relationships[edge.Text.Value] = append(relationships[edge.Text.Value], &entity.StatusPair{sourceState, targetState})
 		}
 	}
 	return relationships
 }
 
-func CreateTemplate(states []string, events []string, relation map[string][]*StatusPair) error {
-	data := struct {
-		Package  string
-		States   []string
-		Events   []string
-		Relation map[string][]*StatusPair
-	}{
+func CreateTemplate(states []string, events []string, relation map[string][]*entity.StatusPair) error {
+	data := &entity.TemplateParam{
 		Package:  "fsm",
 		States:   states,
 		Events:   events,

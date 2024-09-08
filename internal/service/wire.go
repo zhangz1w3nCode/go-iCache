@@ -6,12 +6,10 @@ package service
 
 import (
 	"github.com/google/wire"
-	voicesvc "visual-state-machine/internal/service/voice"
+	flowsvc "visual-state-machine/internal/service/flow"
 )
 
 // InitServices 初始化所有服务
 func InitServices() *Services {
-	wire.Build(newServices,
-		voicesvc.NewHookService)
-	return &Services{}
+	wire.Build(newServices, flowsvc.NewFlowService)
 }

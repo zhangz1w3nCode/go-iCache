@@ -8,6 +8,12 @@ github.com/MoeGolibrary/go-lib v0.0.0-20240905100135-c028fd707763 h1:m6fzu/LVXIG
 github.com/MoeGolibrary/go-lib v0.0.0-20240905100135-c028fd707763/go.mod h1:yOlVHECXzMVPD64CHYiUXQtZoiUuFG8Gyh7ntnw88i8=
 github.com/MoeGolibrary/moego-api-definitions v0.0.0-20240906062050-b84395795d92 h1:xNZnClsocNbnrtrjnlfYqMn4SgfX3IQ0L+qt1c+pQAg=
 github.com/MoeGolibrary/moego-api-definitions v0.0.0-20240906062050-b84395795d92/go.mod h1:aBGvp5zlZA129tkl3R5p7oLNAi3oQ0TTxjAx5eVoAoY=
+github.com/MoeGolibrary/moego-api-definitions v0.0.0-20240908065122-3d4c5e26f99f h1:0w0IDHLFb78IIcWoAjMA0OM5fdxdymIU0T7EuHZVmIw=
+github.com/MoeGolibrary/moego-api-definitions v0.0.0-20240908065122-3d4c5e26f99f/go.mod h1:aBGvp5zlZA129tkl3R5p7oLNAi3oQ0TTxjAx5eVoAoY=
+github.com/MoeGolibrary/moego-api-definitions v0.0.0-20240908070001-406de50b59b1 h1:44i+vkzg7Fm4m68MF57FnVcy1SGTrpTbUU9Jnr96dsA=
+github.com/MoeGolibrary/moego-api-definitions v0.0.0-20240908070001-406de50b59b1/go.mod h1:aBGvp5zlZA129tkl3R5p7oLNAi3oQ0TTxjAx5eVoAoY=
+github.com/MoeGolibrary/moego-api-definitions v0.0.0-20240908070001-fc51cfd86232 h1:w56w2eZ+KKw6lsWeeUSdg9BOfiYa5JmMEofTsfHfR+M=
+github.com/MoeGolibrary/moego-api-definitions v0.0.0-20240908070001-fc51cfd86232/go.mod h1:aBGvp5zlZA129tkl3R5p7oLNAi3oQ0TTxjAx5eVoAoY=
 github.com/antlr4-go/antlr/v4 v4.13.0 h1:lxCg3LAv+EUK6t1i0y1V6/SLeUi0eKEKdhQAlS8TVTI=
 github.com/antlr4-go/antlr/v4 v4.13.0/go.mod h1:pfChB/xh/Unjila75QW7+VU4TSnWnnk9UTnmpPaOR2g=
 github.com/beevik/etree v1.1.0/go.mod h1:r8Aw8JqVegEf0w2fDnATrX9VpkMcyFeM0FhwO62wh+A=
