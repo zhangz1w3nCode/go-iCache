@@ -1,4 +1,7 @@
-package fsm
+package template
+
+// FsmGoFileTemplate 是生成的 Go 文件的模板
+const FsmGoFileTemplate = `package {{.Package}}
 
 import (
 	"context"
@@ -12,43 +15,30 @@ type State string
 type Event string
 
 const(
+{{range.States}}
+{{.}} State = "{{.}}"
+{{end}}
 
-StateStart State = "StateStart"
-
-StateHandle State = "StateHandle"
-
-StateFinish State = "StateFinish"
-
-
-
-DoEvent Event = "DoEvent"
-
-FinishEvent Event = "FinishEvent"
-
+{{range.Events}}
+{{.}} Event = "{{.}}"
+{{end}}
 )
 
 var events = fsm.Events{
-	{Name: string(DoEvent), Src: []string{string(StateStart)}, Dst: string(StateHandle)},
-	{Name: string(FinishEvent), Src: []string{string(StateHandle)}, Dst: string(StateFinish)},
+	{{- range $eventName, $pairs := .Relation}}
+	{{- range $pair := $pairs}}
+	{Name: string({{$eventName}}), Src: []string{string({{$pair.SourceState}})}, Dst: string({{$pair.TargetState}})},
+	{{- end}}
+	{{- end}}
 }
 
 var callbacks = fsm.Callbacks{
-	
-	"enter_" + string(StateStart): func(_ context.Context, e *fsm.Event) {
+	{{range .States}}
+	"enter_" + string({{.}}): func(_ context.Context, e *fsm.Event) {
 		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
 		return
 	},
-	
-	"enter_" + string(StateHandle): func(_ context.Context, e *fsm.Event) {
-		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
-		return
-	},
-	
-	"enter_" + string(StateFinish): func(_ context.Context, e *fsm.Event) {
-		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
-		return
-	},
-	
+	{{end}}
 }
 
 type FsmContext struct {
@@ -71,3 +61,4 @@ func (c *FsmContext) Trans(event string) (string, error) {
 	}
 	return c.myFsm.Current(), nil
 }
+`

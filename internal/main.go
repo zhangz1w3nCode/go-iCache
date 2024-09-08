@@ -13,7 +13,7 @@ import (
 	"syscall"
 	"visual-state-machine/config"
 	"visual-state-machine/internal/service"
-	"visual-state-machine/internal/utils/myFsm"
+	"visual-state-machine/internal/service/flow"
 )
 
 func main() {
@@ -41,7 +41,7 @@ func main() {
 	log.Printf("server started at :%d, debug: %t", config.Get().Port, config.Get().Debug)
 
 	// 设置 HTTP 路由
-	http.HandleFunc("/generate_fsm", myFsm.GenerateFsmHandler)
+	http.HandleFunc("/generate_fsm", flow.GenerateFsmHandler)
 	// 启动 HTTP 服务器
 	fmt.Println("Server is running on port 8081...")
 	http.ListenAndServe(":8081", nil)
