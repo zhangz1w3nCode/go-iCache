@@ -1,6 +1,7 @@
 package flow
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -8,8 +9,19 @@ import (
 	"os"
 	"text/template"
 	"visual-state-machine/internal/entity"
+	"visual-state-machine/internal/logic/calling"
 	flowTemp "visual-state-machine/internal/utils/template"
 )
+
+type ServiceTest struct {
+	t *calling.UserLogic
+}
+
+func NewTestService(user *calling.UserLogic) *ServiceTest {
+	return &ServiceTest{
+		t: user,
+	}
+}
 
 func GenerateFsmHandler(w http.ResponseWriter, r *http.Request) {
 	// 设置 CORS 响应头
@@ -41,6 +53,13 @@ func GenerateFsmHandler(w http.ResponseWriter, r *http.Request) {
 	extractedRelationships := ExtractRelationships(req.Nodes, req.Edges)
 
 	CreateVisualFlow(status, events, extractedRelationships)
+
+	user, err := calling.New().GetUser(context.Background(), 1)
+	if err != nil {
+		return
+	}
+
+	fmt.Println(user)
 }
 
 // ExtractStates 提取状态集合

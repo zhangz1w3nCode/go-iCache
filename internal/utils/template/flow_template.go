@@ -27,35 +27,45 @@ const(
 var events = fsm.Events{
 	{{- range $eventName, $pairs := .Relation}}
 	{{- range $pair := $pairs}}
-	{Name: string({{$eventName}}), Src: []string{string({{$pair.SourceState}})}, Dst: string({{$pair.TargetState}})},
+	{Name: {{$eventName}}.GetString(), Src: []string{string({{$pair.SourceState}})}, Dst: string({{$pair.TargetState}})},
 	{{- end}}
 	{{- end}}
 }
 
 var callbacks = fsm.Callbacks{
 	{{range .States}}
-	"enter_" + string({{.}}): func(_ context.Context, e *fsm.Event) {
+	"enter_" + {{.}}.GetString(): func(_ context.Context, e *fsm.Event) {
 		fmt.Printf("状态改变为: %s\n", e.FSM.Current())
 		return
 	},
 	{{end}}
 }
 
-type FsmContext struct {
+type StatusContext struct {
 	myFsm *fsm.FSM
 }
 
-func GenerateFSM(status string) *FsmContext {
-	fsmCtx := &FsmContext{}
+func GenerateFSM(status string) *StatusContext {
+	fsmCtx := &StatusContext{}
 	fsmCtx.myFsm = fsm.NewFSM(status, events, callbacks)
 	return fsmCtx
 }
 
-func (c *FsmContext) Trans(event string) (string, error) {
-	if !c.myFsm.Can(event) {
-		return "", status.Errorf(codes.InvalidArgument, "invalid event: %s", event)
+func (s State) GetString() string {
+	return string(s)
+}
+
+func (e Event) GetString() string {
+	return string(e)
+}
+
+func (c *StatusContext) Trans(ctx context.Context, event Event) (string, error) {
+	if !c.myFsm.Can(event.GetString()) {
+		return "", status.Errorf(codes.InvalidArgument,
+			"Tans status invalid! current status:%s  "+
+				"current event: %s", c.myFsm.Current(), event)
 	}
-	err := c.myFsm.Event(context.Background(),event)
+	err := c.myFsm.Event(ctx, event.GetString())
 	if err != nil {
 		return "", err
 	}

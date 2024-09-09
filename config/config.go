@@ -1,4 +1,3 @@
-// 应该放go-lib里
 package config
 
 import (
@@ -19,7 +18,6 @@ type Config struct {
 	Debug    bool     `yaml:"debug"`
 	Database database `yaml:"database"`
 	Redis    redis    `yaml:"redis"`
-	Twilio   twilio   `yaml:"twilio"`
 	Chatgpt  chatgpt  `yaml:"chatgpt"`
 }
 
@@ -39,14 +37,6 @@ type gormCfg struct {
 	// can add more
 	SkipDefaultTransaction bool `yaml:"skip_default_transaction"`
 	QueryFields            bool `yaml:"query_fields"`
-}
-
-type twilio struct {
-	AccountSid string `yaml:"account_sid"`
-	AuthToken  string `yaml:"auth_token"`
-	ApiKey     string `yaml:"api_key"`
-	ApiSecret  string `yaml:"api_secret"`
-	AppID      string `yaml:"app_id"`
 }
 
 type chatgpt struct {

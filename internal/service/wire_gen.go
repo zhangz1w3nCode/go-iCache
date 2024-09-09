@@ -6,12 +6,19 @@
 
 package service
 
-import ()
+import (
+	callingLogic "visual-state-machine/internal/logic/calling"
+	callingRepo "visual-state-machine/internal/repo/log"
+	callingsvc "visual-state-machine/internal/service/flow"
+)
 
 // Injectors from wire.go:
 
 // InitServices 初始化所有服务
 func InitServices() *Services {
-	services := newServices(nil)
+	callingApi:=callingRepo.New()
+	callingLogic:=callingLogic.New(callingApi)
+	callingService :=callingsvc.NewTestService(callingLogic)
+	services := newServices(callingService)
 	return services
 }

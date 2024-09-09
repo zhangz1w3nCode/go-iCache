@@ -7,12 +7,11 @@ import (
 
 // Services 是所有服务的集合
 type Services struct {
-	FlowService *flow.FlowService
+	CallingService *flow.ServiceTest
 }
 
-func newServices(
-	flowService *flow.FlowService) *Services {
+func newServices(callingService *flow.ServiceTest) *Services {
 	return &Services{
-		FlowService: flowService,
+		CallingService: callingService,
 	}
 }
