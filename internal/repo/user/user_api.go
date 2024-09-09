@@ -1,4 +1,4 @@
-package log
+package user
 
 import (
 	"context"
@@ -9,7 +9,7 @@ import (
 )
 
 type API interface {
-	GetUser(ctx context.Context, updateCallingLog *entity.OceanUser) (*entity.OceanUser, error)
+	GetUser(ctx context.Context, updateCallingLog *entity.User) (*entity.User, error)
 }
 
 type impl struct {

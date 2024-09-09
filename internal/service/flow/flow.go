@@ -9,18 +9,12 @@ import (
 	"os"
 	"text/template"
 	"visual-state-machine/internal/entity"
-	"visual-state-machine/internal/logic/calling"
+	"visual-state-machine/internal/logic/user"
 	flowTemp "visual-state-machine/internal/utils/template"
 )
 
-type ServiceTest struct {
-	t *calling.UserLogic
-}
-
-func NewTestService(user *calling.UserLogic) *ServiceTest {
-	return &ServiceTest{
-		t: user,
-	}
+type Service struct {
+	user *user.User
 }
 
 func GenerateFsmHandler(w http.ResponseWriter, r *http.Request) {
@@ -48,18 +42,18 @@ func GenerateFsmHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	status := ExtractStates(req.Nodes)
-	events := ExtractEvents(req.Edges)
-	extractedRelationships := ExtractRelationships(req.Nodes, req.Edges)
+	//status := ExtractStates(req.Nodes)
+	//events := ExtractEvents(req.Edges)
+	//extractedRelationships := ExtractRelationships(req.Nodes, req.Edges)
+	//
+	//CreateVisualFlow(status, events, extractedRelationships)
 
-	CreateVisualFlow(status, events, extractedRelationships)
-
-	user, err := calling.New().GetUser(context.Background(), 1)
+	userDB, err := user.New().GetUser(context.Background(), 1)
 	if err != nil {
 		return
 	}
 
-	fmt.Println(user)
+	fmt.Println(userDB)
 }
 
 // ExtractStates 提取状态集合
