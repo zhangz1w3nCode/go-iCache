@@ -8,17 +8,17 @@ import (
 	userlogic "visual-state-machine/internal/logic/user"
 )
 
-type Service struct {
+type Api struct {
 	user *userlogic.User
 }
 
-func NewService(user *userlogic.User) *Service {
-	return &Service{
+func New(user *userlogic.User) *Api {
+	return &Api{
 		user: user,
 	}
 }
 
-func (s *Service) Get(w http.ResponseWriter, r *http.Request) {
+func (s *Api) Get(w http.ResponseWriter, r *http.Request) {
 	// 设置 CORS 响应头
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")

@@ -14,7 +14,7 @@ var (
 )
 
 type Config struct {
-	Port     int      `yaml:"port"`
+	Port     string   `yaml:"port"`
 	Debug    bool     `yaml:"debug"`
 	Database database `yaml:"database"`
 	Redis    redis    `yaml:"redis"`
