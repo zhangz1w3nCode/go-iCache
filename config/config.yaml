@@ -8,3 +8,4 @@ database:
   # unit: milliseconds, 3600000ms = 1hour
   connection_max_lifetime: 3600000
 debug: true
+ginMode: debug

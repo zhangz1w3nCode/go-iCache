@@ -2,6 +2,7 @@ package user
 
 import (
 	"context"
+	"strconv"
 
 	"visual-state-machine/internal/entity/model"
 	"visual-state-machine/internal/repo/user"
@@ -17,11 +18,13 @@ func New(api user.API) *User {
 	}
 }
 
-func (u *User) GetUser(ctx context.Context, ID int64) (*model.User, error) {
-
+func (u *User) GetUser(ctx context.Context, id string) (*model.User, error) {
+	ID, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		return nil, err
+	}
 	param := &model.User{
-		ID:       ID,
-		UserName: "zzw",
+		ID: ID,
 	}
 	userDB, err := u.api.GetUser(ctx, param)
 

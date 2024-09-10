@@ -14,8 +14,13 @@ import (
 
 // InitApis 初始化所有API
 func InitApis() *Apis {
+	userApi := handleUserApi()
+	return newApis(userApi)
+}
+
+func handleUserApi() *user_svc.Api {
 	userRepo := user_repo.New()
 	userLogic := user_logic.New(userRepo)
 	userApi := user_svc.New(userLogic)
-	return newApis(userApi)
+	return userApi
 }

@@ -1,17 +1,15 @@
 package main
 
 import (
+	"context"
 	"flag"
+	"github.com/MoeGolibrary/go-lib/zlog"
 	"log"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
-
-	"github.com/MoeGolibrary/go-lib/zlog"
-
 	"visual-state-machine/config"
-	"visual-state-machine/internal/api"
+	"visual-state-machine/internal/api/router"
 )
 
 func main() {
@@ -27,17 +25,10 @@ func main() {
 	// 初始化日志
 	zlog.InitLogger(zlog.NewConfig())
 
-	//初始化所有api
-	Apis := api.InitApis()
-
-	// 设置 HTTP 路由
-	http.HandleFunc("/user/get", Apis.UserApiService.Get)
-
-	//绑定端口
-	http.ListenAndServe(":"+config.Get().Port, nil)
-
-	//打印端口信息
-	log.Printf("server started at :%s, debug: %t", config.Get().Port, config.Get().Debug)
+	err := router.InitRouter()
+	if err != nil {
+		zlog.Error(context.Background(), err.Error())
+	}
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)

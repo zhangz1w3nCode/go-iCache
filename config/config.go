@@ -16,6 +16,7 @@ var (
 type Config struct {
 	Port     string   `yaml:"port"`
 	Debug    bool     `yaml:"debug"`
+	GinMode  string   `yaml:"ginMode"`
 	Database database `yaml:"database"`
 	Redis    redis    `yaml:"redis"`
 	Chatgpt  chatgpt  `yaml:"chatgpt"`

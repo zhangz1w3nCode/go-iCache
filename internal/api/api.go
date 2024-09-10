@@ -6,13 +6,13 @@ import (
 
 // Apis 是所有Api的集合
 type Apis struct {
-	UserApiService *userApi.Api
+	UserApi *userApi.Api
 }
 
 func newApis(
-	userApiService *userApi.Api,
+	userApi *userApi.Api,
 ) *Apis {
 	return &Apis{
-		UserApiService: userApiService,
+		UserApi: userApi,
 	}
 }
