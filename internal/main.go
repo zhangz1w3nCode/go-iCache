@@ -25,7 +25,7 @@ func main() {
 	// 初始化日志
 	zlog.InitLogger(zlog.NewConfig())
 
-	err := router.InitRouter()
+	err := router.NewRouter().InitRouter()
 	if err != nil {
 		zlog.Error(context.Background(), err.Error())
 	}

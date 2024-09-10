@@ -5,29 +5,38 @@ import (
 	"visual-state-machine/internal/api"
 )
 
-func registerRouter(r *gin.Engine, apis *api.Apis) {
-	registerUserRouter(r, apis)
-	registerFlowRouter(r, apis)
+type Register struct {
+	r    *gin.Engine
+	apis *api.Apis
 }
 
-func registerUserRouter(r *gin.Engine, apis *api.Apis) {
+func newRegister() *Register {
+	return &Register{}
+}
+
+func (rgst *Register) registerRouter() {
+	rgst.registerUserRouter()
+	rgst.registerFlowRouter()
+}
+
+func (rgst *Register) registerUserRouter() {
 	//userAPI
-	userAPI := apis.UserApi
+	userAPI := rgst.apis.UserApi
 
 	//URL Mapping API
-	userGroup := r.Group("/user")
+	userGroup := rgst.r.Group("/user")
 	{
 		userGroup.GET("/get/:id", userAPI.Get)
 	}
 }
 
-func registerFlowRouter(r *gin.Engine, apis *api.Apis) {
-	////FlowAPI
-	//userAPI := apis.UserApi
-	//
-	////URL Mapping API
-	//userGroup := r.Group("/user")
-	//{
-	//	userGroup.GET("/get/:id", userAPI.Get)
-	//}
+func (rgst *Register) registerFlowRouter() {
+	//userAPI
+	userAPI := rgst.apis.UserApi
+
+	//URL Mapping API
+	userGroup := rgst.r.Group("/flow")
+	{
+		userGroup.GET("/get/:id", userAPI.Get)
+	}
 }

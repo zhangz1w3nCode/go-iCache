@@ -7,15 +7,24 @@ import (
 )
 
 type Router struct {
-	engine *gin.Engine
+	engine   *gin.Engine
+	register *Register
 }
 
-func InitRouter() error {
+func NewRouter() *Router {
+	return &Router{
+		engine:   gin.Default(),
+		register: newRegister(),
+	}
+}
+
+func (rt *Router) InitRouter() error {
 	gin.SetMode(config.Get().GinMode)
-	router := gin.Default()
+	router := rt.engine
 	apis := api.InitApis()
-	// 注册路由
-	registerRouter(router, apis)
+	rt.register.r = router
+	rt.register.apis = apis
+	rt.register.registerRouter()
 	// 启动服务
 	err := router.Run(":" + config.Get().Port)
 	if err != nil {
