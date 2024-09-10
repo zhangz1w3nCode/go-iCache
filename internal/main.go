@@ -7,11 +7,11 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"visual-state-machine/internal/api"
 
 	"github.com/MoeGolibrary/go-lib/zlog"
 
 	"visual-state-machine/config"
+	"visual-state-machine/internal/api"
 )
 
 func main() {
@@ -35,6 +35,8 @@ func main() {
 
 	//绑定端口
 	http.ListenAndServe(":"+config.Get().Port, nil)
+
+	//打印端口信息
 	log.Printf("server started at :%s, debug: %t", config.Get().Port, config.Get().Debug)
 
 	c := make(chan os.Signal, 1)

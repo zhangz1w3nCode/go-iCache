@@ -12,15 +12,15 @@
         
         3️⃣ Docker
         
-        4️⃣ Fsm
+        4️⃣ Go Fsm
         
         5️⃣ Gorm
        
         6⃣️ LogicFlow
        
-        7⃣️ 
+        7⃣️ Vue
        
-        8⃣️ 
+        8⃣️ Gin
        
         9⃣️️ 
      
