@@ -8,16 +8,23 @@ import (
 	"net/http"
 	"os"
 	"text/template"
+
 	"visual-state-machine/internal/entity"
-	"visual-state-machine/internal/logic/user"
+	userlogic "visual-state-machine/internal/logic/user"
 	flowTemp "visual-state-machine/internal/utils/template"
 )
 
 type Service struct {
-	user *user.User
+	user *userlogic.User
 }
 
-func GenerateFsmHandler(w http.ResponseWriter, r *http.Request) {
+func NewService(user *userlogic.User) *Service {
+	return &Service{
+		user: user,
+	}
+}
+
+func (s *Service) GenerateFlow(w http.ResponseWriter, r *http.Request) {
 	// 设置 CORS 响应头
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS")
@@ -48,7 +55,7 @@ func GenerateFsmHandler(w http.ResponseWriter, r *http.Request) {
 	//
 	//CreateVisualFlow(status, events, extractedRelationships)
 
-	userDB, err := user.New().GetUser(context.Background(), 1)
+	userDB, err := s.user.GetUser(context.Background(), 2)
 	if err != nil {
 		return
 	}

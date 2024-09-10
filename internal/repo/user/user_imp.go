@@ -2,12 +2,13 @@ package user
 
 import (
 	"context"
-	"visual-state-machine/internal/entity"
+
+	"visual-state-machine/internal/entity/model"
 )
 
-func (i *impl) GetUser(ctx context.Context, user *entity.User) (*entity.User, error) {
-	userDB := &entity.User{}
-	if err := i.db.WithContext(ctx).Model(&entity.User{}).
+func (i *impl) GetUser(ctx context.Context, user *model.User) (*model.User, error) {
+	userDB := &model.User{}
+	if err := i.db.WithContext(ctx).Model(&model.User{}).
 		Where("id = ?", user.ID).
 		Find(userDB).
 		Error; err != nil {

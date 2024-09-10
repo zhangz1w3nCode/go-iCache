@@ -2,7 +2,8 @@ package user
 
 import (
 	"context"
-	"visual-state-machine/internal/entity"
+
+	"visual-state-machine/internal/entity/model"
 	"visual-state-machine/internal/repo/user"
 )
 
@@ -10,15 +11,15 @@ type User struct {
 	api user.API
 }
 
-func New() *User {
+func New(api user.API) *User {
 	return &User{
-		api: user.New(),
+		api: api,
 	}
 }
 
-func (u *User) GetUser(ctx context.Context, ID int64) (*entity.User, error) {
+func (u *User) GetUser(ctx context.Context, ID int64) (*model.User, error) {
 
-	param := &entity.User{
+	param := &model.User{
 		ID:       ID,
 		UserName: "zzw",
 	}

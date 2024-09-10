@@ -2,14 +2,16 @@ package user
 
 import (
 	"context"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+
 	"visual-state-machine/config"
-	"visual-state-machine/internal/entity"
+	"visual-state-machine/internal/entity/model"
 )
 
 type API interface {
-	GetUser(ctx context.Context, updateCallingLog *entity.User) (*entity.User, error)
+	GetUser(ctx context.Context, updateCallingLog *model.User) (*model.User, error)
 }
 
 type impl struct {
