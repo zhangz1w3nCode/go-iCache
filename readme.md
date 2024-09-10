@@ -2,8 +2,6 @@
 
 ### 📌 Preview
         1️⃣ visual-state-machine-flow是一款可视化状态机编排工具🔧
-        
-        2️⃣ visual-state-machine-flow····
 
 ### 📌 Technology stack
         1️⃣ Go
