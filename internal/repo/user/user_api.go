@@ -11,7 +11,8 @@ import (
 )
 
 type API interface {
-	GetUser(ctx context.Context, updateCallingLog *model.User) (*model.User, error)
+	Get(ctx context.Context, id int64) (*model.User, error)
+	List(ctx context.Context) ([]*model.User, error)
 }
 
 type impl struct {

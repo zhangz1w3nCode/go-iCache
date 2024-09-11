@@ -26,3 +26,13 @@ func (s *Api) Get(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, userDB)
 }
+
+func (s *Api) List(c *gin.Context) {
+	users, err := s.user.List(c)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"message": "users not found",
+		})
+	}
+	c.JSON(http.StatusOK, users)
+}

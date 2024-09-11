@@ -23,14 +23,22 @@ func (u *User) GetUser(ctx context.Context, id string) (*model.User, error) {
 	if err != nil {
 		return nil, err
 	}
-	param := &model.User{
-		ID: ID,
-	}
-	userDB, err := u.api.GetUser(ctx, param)
+	userDB, err := u.api.Get(ctx, ID)
 
 	if err != nil {
 		return nil, err
 	}
 
 	return userDB, nil
+}
+
+func (u *User) List(ctx context.Context) ([]*model.User, error) {
+
+	users, err := u.api.List(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
 }

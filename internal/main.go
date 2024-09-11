@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"github.com/MoeGolibrary/go-lib/zlog"
 	"log"
@@ -9,7 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 	"visual-state-machine/config"
-	"visual-state-machine/internal/api/router"
+	"visual-state-machine/internal/router"
 )
 
 func main() {
@@ -25,10 +24,8 @@ func main() {
 	// 初始化日志
 	zlog.InitLogger(zlog.NewConfig())
 
-	err := router.NewRouter().InitRouter()
-	if err != nil {
-		zlog.Error(context.Background(), err.Error())
-	}
+	//初始化路由
+	router.InitRouter()
 
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
