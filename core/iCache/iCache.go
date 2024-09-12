@@ -1,7 +1,7 @@
 package iCache
 
-// RealCache 真正缓存的接口
-type RealCache interface {
+// iCache 真正缓存的接口
+type iCache interface {
 	Get(key string) *ValueWrapper
 	Set(key string, value interface{})
 	GetValues() []*ValueWrapper

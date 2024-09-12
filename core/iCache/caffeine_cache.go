@@ -2,21 +2,25 @@ package iCache
 
 import (
 	"github.com/patrickmn/go-cache"
-	"sync"
 	"time"
 )
+
+// CacheConfig 缓存配置
+type CacheConfig struct {
+	ExpireAfterWrite  time.Duration
+	ExpireAfterAccess time.Duration
+}
 
 type CaffeineCache struct {
 	name  string
 	cache *cache.Cache
-	lock  sync.RWMutex
 }
 
 // NewCaffeineCache 创建一个新的CaffeineCache实例
-func NewCaffeineCache(name string, config *CacheConfig) *CaffeineCache {
+func NewCaffeineCache(cacheName string, cacheConfig *CacheConfig) *CaffeineCache {
 	return &CaffeineCache{
-		name:  name,
-		cache: cache.New(config.ExpireAfterWrite, config.ExpireAfterAccess),
+		name:  cacheName,
+		cache: cache.New(cacheConfig.ExpireAfterWrite, cacheConfig.ExpireAfterAccess),
 	}
 }
 
@@ -66,10 +70,4 @@ func (c *CaffeineCache) CalculateMemoryUsage() float64 {
 func (c *CaffeineCache) GetCacheStatus() CacheStats {
 	// This is a simplified version and does not provide real cache statistics
 	return CacheStats{}
-}
-
-// CacheConfig 缓存配置
-type CacheConfig struct {
-	ExpireAfterWrite  time.Duration
-	ExpireAfterAccess time.Duration
 }
