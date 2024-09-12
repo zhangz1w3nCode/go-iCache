@@ -6,21 +6,21 @@ import (
 	"time"
 )
 
-type caffeineCache struct {
+type CaffeineCache struct {
 	name  string
 	cache *cache.Cache
 	lock  sync.RWMutex
 }
 
 // NewCaffeineCache 创建一个新的CaffeineCache实例
-func NewCaffeineCache(name string, config *CacheConfig) *caffeineCache {
-	return &caffeineCache{
+func NewCaffeineCache(name string, config *CacheConfig) *CaffeineCache {
+	return &CaffeineCache{
 		name:  name,
 		cache: cache.New(config.ExpireAfterWrite, config.ExpireAfterAccess),
 	}
 }
 
-func (c *caffeineCache) Get(key string) *ValueWrapper {
+func (c *CaffeineCache) Get(key string) *ValueWrapper {
 	c.lock.RLock()
 	defer c.lock.RUnlock()
 	if item, found := c.cache.Get(key); found {
@@ -31,13 +31,13 @@ func (c *caffeineCache) Get(key string) *ValueWrapper {
 	return nil
 }
 
-func (c *caffeineCache) Put(key string, value interface{}) {
+func (c *CaffeineCache) Put(key string, value interface{}) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
 	c.cache.Set(key, NewValueWrapper(value), cache.DefaultExpiration)
 }
 
-func (c *caffeineCache) GetValues() []*ValueWrapper {
+func (c *CaffeineCache) GetValues() []*ValueWrapper {
 	c.lock.RLock()
 	defer c.lock.RUnlock()
 	var values []*ValueWrapper
@@ -47,7 +47,7 @@ func (c *caffeineCache) GetValues() []*ValueWrapper {
 	return values
 }
 
-func (c *caffeineCache) GetKeys() []string {
+func (c *CaffeineCache) GetKeys() []string {
 	c.lock.RLock()
 	defer c.lock.RUnlock()
 	var keys []string
@@ -57,22 +57,22 @@ func (c *caffeineCache) GetKeys() []string {
 	return keys
 }
 
-func (c *caffeineCache) Size() int {
+func (c *CaffeineCache) Size() int {
 	c.lock.RLock()
 	defer c.lock.RUnlock()
 	return c.cache.ItemCount()
 }
 
-func (c *caffeineCache) GetName() string {
+func (c *CaffeineCache) GetName() string {
 	return c.name
 }
 
-func (c *caffeineCache) CalculateMemoryUsage() float64 {
+func (c *CaffeineCache) CalculateMemoryUsage() float64 {
 	// This is a simplified version and does not calculate actual memory usage
 	return float64(c.Size())
 }
 
-func (c *caffeineCache) GetCacheStatus() CacheStats {
+func (c *CaffeineCache) GetCacheStatus() CacheStats {
 	// This is a simplified version and does not provide real cache statistics
 	return CacheStats{}
 }
