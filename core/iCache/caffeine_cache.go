@@ -20,26 +20,21 @@ func NewCaffeineCache(name string, config *CacheConfig) *CaffeineCache {
 	}
 }
 
+func (c *CaffeineCache) Set(key string, value interface{}) {
+	c.cache.Set(key, NewValueWrapper(value), cache.DefaultExpiration)
+}
+
 func (c *CaffeineCache) Get(key string) *ValueWrapper {
-	c.lock.RLock()
-	defer c.lock.RUnlock()
 	if item, found := c.cache.Get(key); found {
 		vw := item.(*ValueWrapper)
 		vw.UpdateAccessTime()
+		vw.UpdateWriteTime()
 		return vw
 	}
 	return nil
 }
 
-func (c *CaffeineCache) Put(key string, value interface{}) {
-	c.lock.Lock()
-	defer c.lock.Unlock()
-	c.cache.Set(key, NewValueWrapper(value), cache.DefaultExpiration)
-}
-
 func (c *CaffeineCache) GetValues() []*ValueWrapper {
-	c.lock.RLock()
-	defer c.lock.RUnlock()
 	var values []*ValueWrapper
 	for _, item := range c.cache.Items() {
 		values = append(values, item.Object.(*ValueWrapper))
@@ -48,8 +43,6 @@ func (c *CaffeineCache) GetValues() []*ValueWrapper {
 }
 
 func (c *CaffeineCache) GetKeys() []string {
-	c.lock.RLock()
-	defer c.lock.RUnlock()
 	var keys []string
 	for key := range c.cache.Items() {
 		keys = append(keys, key)
@@ -58,8 +51,6 @@ func (c *CaffeineCache) GetKeys() []string {
 }
 
 func (c *CaffeineCache) Size() int {
-	c.lock.RLock()
-	defer c.lock.RUnlock()
 	return c.cache.ItemCount()
 }
 
