@@ -1,10 +1,8 @@
 package router
 
 import (
-	"context"
-	"github.com/MoeGolibrary/go-lib/zlog"
+	"fmt"
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 	"visual-state-machine/config"
 	"visual-state-machine/internal/api"
 )
@@ -40,6 +38,6 @@ func InitRouter() {
 	router := NewRouter(apis)
 	err := router.Init()
 	if err != nil {
-		zlog.Error(context.Background(), "InitRouter Error!", zap.Error(err))
+		fmt.Println(err)
 	}
 }

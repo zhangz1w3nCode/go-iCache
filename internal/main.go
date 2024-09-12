@@ -1,34 +1,52 @@
 package main
 
 import (
-	"flag"
-	"github.com/MoeGolibrary/go-lib/zlog"
-	"log"
-	"os"
-	"os/signal"
-	"syscall"
-	"visual-state-machine/config"
-	"visual-state-machine/internal/router"
+	"fmt"
+	"time"
+	"visual-state-machine/internal/core/iCache"
+	"visual-state-machine/internal/entity/model"
 )
 
 func main() {
-	// 初始化配置
-	configPath := flag.String("config", "", "specify config path [config.yaml]")
-	flag.Parse()
-	if configPath == nil || *configPath == "" {
-		flag.Usage()
-		os.Exit(1)
+	// 创建缓存实例
+	cacheInstance := iCache.NewCaffeineCache("testCache", &iCache.CacheConfig{
+		ExpireAfterWrite:  10 * time.Minute,
+		ExpireAfterAccess: 5 * time.Minute,
+	})
+
+	// 存储数据
+	cacheInstance.Put("key1", &model.User{
+		ID:       1,
+		UserName: "zzw",
+	})
+
+	// 获取数据
+	valueWrapper := cacheInstance.Get("key1")
+	if valueWrapper != nil {
+		fmt.Println("Retrieved value:", valueWrapper.Data)
 	}
-	config.Init(*configPath)
 
-	// 初始化日志
-	zlog.InitLogger(zlog.NewConfig())
+	// 获取所有键
+	keys := cacheInstance.GetKeys()
+	fmt.Println("Keys:", keys)
 
-	//初始化路由
-	router.InitRouter()
+	// 获取所有值
+	values := cacheInstance.GetValues()
+	fmt.Println("Values:", values)
 
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-	<-c
-	log.Println("server stopped")
+	// 获取缓存大小
+	size := cacheInstance.Size()
+	fmt.Println("Cache size:", size)
+
+	// 获取缓存名称
+	name := cacheInstance.GetName()
+	fmt.Println("Cache name:", name)
+
+	// 计算内存使用情况
+	memoryUsage := cacheInstance.CalculateMemoryUsage()
+	fmt.Println("Memory usage:", memoryUsage)
+
+	// 获取缓存状态
+	cacheStatus := cacheInstance.GetCacheStatus()
+	fmt.Println("Cache status:", cacheStatus)
 }
