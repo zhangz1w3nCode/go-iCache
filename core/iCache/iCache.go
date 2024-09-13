@@ -1,10 +1,14 @@
 package iCache
 
+import (
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache/value-wrapper"
+)
+
 // iCache 真正缓存的接口
 type iCache interface {
-	Get(key string) *ValueWrapper
+	Get(key string) *value_wrapper.ValueWrapper
 	Set(key string, value interface{})
-	GetValues() []*ValueWrapper
+	GetValues() []*value_wrapper.ValueWrapper
 	GetKeys() []string
 	Size() int
 	GetName() string
@@ -14,6 +18,19 @@ type iCache interface {
 
 // CacheStats 缓存状态统计
 type CacheStats struct {
-	HitCount  int64
-	MissCount int64
+	HitCount   int64
+	MissCount  int64
+	KeysAdded  int64
+	KeysUpdate int64
+	KeysEvict  int64
+	CostAdd    int64
+	CostEvict  int64
+	RejectSets int64
+	// The following 2 keep track of how many gets were kept and dropped on the
+	// floor.
+	GetDropGets int64
+	SetDropGets int64
+	KeepGets    int64
+	// 命中率
+	Ratio float64
 }

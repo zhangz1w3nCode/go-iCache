@@ -1,12 +1,14 @@
-package iCache
+package map_cache
 
 import (
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache"
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache/value-wrapper"
 	"sync"
 )
 
 // SimpleCache 简单的缓存实现
 type SimpleCache struct {
-	cache map[string]*ValueWrapper
+	cache map[string]*value_wrapper.ValueWrapper
 	lock  sync.RWMutex
 	name  string
 }
@@ -14,12 +16,12 @@ type SimpleCache struct {
 // NewSimpleCache 创建一个新的SimpleCache实例
 func NewSimpleCache(name string) *SimpleCache {
 	return &SimpleCache{
-		cache: make(map[string]*ValueWrapper),
+		cache: make(map[string]*value_wrapper.ValueWrapper),
 		name:  name,
 	}
 }
 
-func (c *SimpleCache) Get(key string) *ValueWrapper {
+func (c *SimpleCache) Get(key string) *value_wrapper.ValueWrapper {
 	c.lock.RLock()
 	defer c.lock.RUnlock()
 	vw, exists := c.cache[key]
@@ -32,13 +34,13 @@ func (c *SimpleCache) Get(key string) *ValueWrapper {
 func (c *SimpleCache) Put(key string, value interface{}) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
-	c.cache[key] = NewValueWrapper(value)
+	c.cache[key] = value_wrapper.NewValueWrapper(value)
 }
 
-func (c *SimpleCache) GetValues() []*ValueWrapper {
+func (c *SimpleCache) GetValues() []*value_wrapper.ValueWrapper {
 	c.lock.RLock()
 	defer c.lock.RUnlock()
-	var values []*ValueWrapper
+	var values []*value_wrapper.ValueWrapper
 	for _, vw := range c.cache {
 		values = append(values, vw)
 	}
@@ -70,7 +72,7 @@ func (c *SimpleCache) CalculateMemoryUsage() float64 {
 	return float64(c.Size())
 }
 
-func (c *SimpleCache) GetCacheStatus() CacheStats {
+func (c *SimpleCache) GetCacheStatus() iCache.CacheStats {
 	// 简化版本，不提供真实缓存状态
-	return CacheStats{}
+	return iCache.CacheStats{}
 }

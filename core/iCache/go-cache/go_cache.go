@@ -1,7 +1,10 @@
-package iCache
+package go_cache
 
 import (
 	"github.com/patrickmn/go-cache"
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache"
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache/config"
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache/value-wrapper"
 )
 
 // GoCache go-cache缓存
@@ -11,7 +14,7 @@ type GoCache struct {
 }
 
 // NewGoCache 创建一个新的GoCache实例
-func NewGoCache(cacheConfig *CacheConfig) *GoCache {
+func NewGoCache(cacheConfig *config.GoCacheConfig) *GoCache {
 	return &GoCache{
 		name:  cacheConfig.CacheName,
 		cache: cache.New(cacheConfig.ExpireTime, cacheConfig.CleanTime),
@@ -19,12 +22,12 @@ func NewGoCache(cacheConfig *CacheConfig) *GoCache {
 }
 
 func (c *GoCache) Set(key string, value interface{}) {
-	c.cache.Set(key, NewValueWrapper(value), cache.DefaultExpiration)
+	c.cache.Set(key, value_wrapper.NewValueWrapper(value), cache.DefaultExpiration)
 }
 
-func (c *GoCache) Get(key string) *ValueWrapper {
+func (c *GoCache) Get(key string) *value_wrapper.ValueWrapper {
 	if item, found := c.cache.Get(key); found {
-		vw := item.(*ValueWrapper)
+		vw := item.(*value_wrapper.ValueWrapper)
 		vw.UpdateAccessTime()
 		vw.UpdateWriteTime()
 		return vw
@@ -32,10 +35,10 @@ func (c *GoCache) Get(key string) *ValueWrapper {
 	return nil
 }
 
-func (c *GoCache) GetValues() []*ValueWrapper {
-	var values []*ValueWrapper
+func (c *GoCache) GetValues() []*value_wrapper.ValueWrapper {
+	var values []*value_wrapper.ValueWrapper
 	for _, item := range c.cache.Items() {
-		values = append(values, item.Object.(*ValueWrapper))
+		values = append(values, item.Object.(*value_wrapper.ValueWrapper))
 	}
 	return values
 }
@@ -61,7 +64,7 @@ func (c *GoCache) CalculateMemoryUsage() float64 {
 	return float64(c.Size())
 }
 
-func (c *GoCache) GetCacheStatus() CacheStats {
+func (c *GoCache) GetCacheStatus() iCache.CacheStats {
 	// This is a simplified version and does not provide real cache statistics
-	return CacheStats{}
+	return iCache.CacheStats{}
 }
