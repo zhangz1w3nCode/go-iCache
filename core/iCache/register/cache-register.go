@@ -1,92 +1,65 @@
 package register
 
 import (
-	"fmt"
+	"encoding/json"
 	"github.com/samuel/go-zookeeper/zk"
-	pb "github.com/zhangz1w3nCode/go-iCache/internal/api/generate/helloworld"
-	svc "github.com/zhangz1w3nCode/go-iCache/internal/service/test"
+	testpb "github.com/zhangz1w3nCode/go-iCache/internal/api/generate/helloworld"
+	userpb "github.com/zhangz1w3nCode/go-iCache/internal/api/generate/user"
+	testsvc "github.com/zhangz1w3nCode/go-iCache/internal/service/test"
+	usersvc "github.com/zhangz1w3nCode/go-iCache/internal/service/user"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
-	"strings"
 	"time"
 )
 
-func RegisterService(zookeeperServers []string, serviceName, serviceAddress string) error {
+//func main() {
+//	StartGRPCServer("iCacheService", "192.168.31.84:9090", "192.168.31.84:2181")
+//}
+
+func RegisterService(zookeeperServers []string, serviceName string, ip string, info map[string]grpc.ServiceInfo) error {
 	zkConn, _, err := zk.Connect(zookeeperServers, time.Second*10)
 	if err != nil {
 		return err
 	}
 	defer zkConn.Close()
 
-	path := "/services/" + serviceName
-	ips := strings.Join(GetIPs(), ",")
-	data := []byte("/" + serviceName + "/" + ips)
+	path := "/services/" + serviceName + "/" + ip
+	infoStr, err := json.Marshal(info)
+	data := infoStr
 	if _, err := zkConn.Create(path, data, int32(0), zk.WorldACL(zk.PermAll)); err != nil {
 		if err != zk.ErrNodeExists {
 			return err
 		}
 	}
 
-	// 读取节点数据
-	get, _, err := zkConn.Get(path)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	fmt.Println("Node data:", string(get))
-
 	return nil
 }
 
-func StartGRPCServer(serviceName, serviceAddress string) {
+func StartGRPCServer(serviceName, bizAppIp string, zkIp string) {
+	listen, _ := net.Listen("tcp", bizAppIp)
+	s := grpc.NewServer()
+	reflection.Register(s)
+	testService := testsvc.NewTestService()
+	userService := usersvc.NewUserService()
+	testpb.RegisterTestServiceServer(s, testService)
+	userpb.RegisterUserServiceServer(s, userService)
+	info := s.GetServiceInfo()
 
-	if err := RegisterService([]string{"192.168.31.84:2181"}, serviceName, serviceAddress); err != nil {
-		log.Fatalf("Failed to register service: %v", err)
+	errZk := RegisterService([]string{zkIp}, serviceName, bizAppIp, info)
+
+	if errZk != nil {
+		log.Fatalf("failed to start zookeeper: %v", errZk)
+		return
 	}
 
-	listen, _ := net.Listen("tcp", ":9099")
-	s := grpc.NewServer()
-	testService := svc.NewTestService()
-	pb.RegisterTestServiceServer(s, testService)
-
-	log.Printf("server start in port: %s", "9099")
-
 	err := s.Serve(listen)
+
+	log.Printf("server start in port: %s", bizAppIp)
 
 	if err != nil {
 		log.Fatalf("failed to serve: %v", err)
 		return
 	}
-}
-
-func GetIPs() []string {
-	// 获取本机的IP地址
-	addrs, err := net.InterfaceAddrs()
-	if err != nil {
-		log.Println("Error getting interface addresses:", err)
-		return nil
-	}
-
-	var ipList []string
-
-	for _, addr := range addrs {
-		// 检查地址是否是IPv4或IPv6
-		ip, ok := addr.(*net.IPNet)
-		if !ok {
-			continue
-		}
-
-		// 检查是否是回环地址（127.0.0.1）
-		if ip.IP.IsLoopback() {
-			continue
-		}
-
-		// 打印IPv4地址
-		if ip.IP.To4() != nil {
-			ipList = append(ipList, ip.IP.String())
-		}
-	}
-
-	return ipList
 }

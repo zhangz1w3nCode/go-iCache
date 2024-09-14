@@ -15,7 +15,7 @@ type TestLogic struct {
 func NewTestLogic() *TestLogic {
 	return &TestLogic{
 		cache: go_cache.NewGoCache(&config.GoCacheConfig{
-			CacheName:  "TestCache",
+			CacheName:  "UserCache",
 			CacheType:  "goCache",
 			ExpireTime: 5 * time.Minute,
 			CleanTime:  10 * time.Minute,
