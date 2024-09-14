@@ -19,7 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	TestService_TestConnect_FullMethodName = "/helloworld.TestService/testConnect"
+	TestService_CreateCache_FullMethodName = "/helloworld.TestService/CreateCache"
+	TestService_GetCacheKey_FullMethodName = "/helloworld.TestService/GetCacheKey"
+	TestService_SetCacheKey_FullMethodName = "/helloworld.TestService/SetCacheKey"
 )
 
 // TestServiceClient is the client API for TestService service.
@@ -29,7 +31,9 @@ const (
 // The greeting service definition.
 type TestServiceClient interface {
 	// Sends a greeting
-	TestConnect(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error)
+	CreateCache(ctx context.Context, in *CreateCacheRequest, opts ...grpc.CallOption) (*CreateCacheReply, error)
+	GetCacheKey(ctx context.Context, in *GetCacheKeyRequest, opts ...grpc.CallOption) (*GetCacheKeyReply, error)
+	SetCacheKey(ctx context.Context, in *SetCacheKeyRequest, opts ...grpc.CallOption) (*SetCacheKeyReply, error)
 }
 
 type testServiceClient struct {
@@ -40,10 +44,30 @@ func NewTestServiceClient(cc grpc.ClientConnInterface) TestServiceClient {
 	return &testServiceClient{cc}
 }
 
-func (c *testServiceClient) TestConnect(ctx context.Context, in *HelloRequest, opts ...grpc.CallOption) (*HelloReply, error) {
+func (c *testServiceClient) CreateCache(ctx context.Context, in *CreateCacheRequest, opts ...grpc.CallOption) (*CreateCacheReply, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(HelloReply)
-	err := c.cc.Invoke(ctx, TestService_TestConnect_FullMethodName, in, out, cOpts...)
+	out := new(CreateCacheReply)
+	err := c.cc.Invoke(ctx, TestService_CreateCache_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *testServiceClient) GetCacheKey(ctx context.Context, in *GetCacheKeyRequest, opts ...grpc.CallOption) (*GetCacheKeyReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCacheKeyReply)
+	err := c.cc.Invoke(ctx, TestService_GetCacheKey_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *testServiceClient) SetCacheKey(ctx context.Context, in *SetCacheKeyRequest, opts ...grpc.CallOption) (*SetCacheKeyReply, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(SetCacheKeyReply)
+	err := c.cc.Invoke(ctx, TestService_SetCacheKey_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +81,9 @@ func (c *testServiceClient) TestConnect(ctx context.Context, in *HelloRequest, o
 // The greeting service definition.
 type TestServiceServer interface {
 	// Sends a greeting
-	TestConnect(context.Context, *HelloRequest) (*HelloReply, error)
+	CreateCache(context.Context, *CreateCacheRequest) (*CreateCacheReply, error)
+	GetCacheKey(context.Context, *GetCacheKeyRequest) (*GetCacheKeyReply, error)
+	SetCacheKey(context.Context, *SetCacheKeyRequest) (*SetCacheKeyReply, error)
 	mustEmbedUnimplementedTestServiceServer()
 }
 
@@ -68,8 +94,14 @@ type TestServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedTestServiceServer struct{}
 
-func (UnimplementedTestServiceServer) TestConnect(context.Context, *HelloRequest) (*HelloReply, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TestConnect not implemented")
+func (UnimplementedTestServiceServer) CreateCache(context.Context, *CreateCacheRequest) (*CreateCacheReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateCache not implemented")
+}
+func (UnimplementedTestServiceServer) GetCacheKey(context.Context, *GetCacheKeyRequest) (*GetCacheKeyReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCacheKey not implemented")
+}
+func (UnimplementedTestServiceServer) SetCacheKey(context.Context, *SetCacheKeyRequest) (*SetCacheKeyReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetCacheKey not implemented")
 }
 func (UnimplementedTestServiceServer) mustEmbedUnimplementedTestServiceServer() {}
 func (UnimplementedTestServiceServer) testEmbeddedByValue()                     {}
@@ -92,20 +124,56 @@ func RegisterTestServiceServer(s grpc.ServiceRegistrar, srv TestServiceServer) {
 	s.RegisterService(&TestService_ServiceDesc, srv)
 }
 
-func _TestService_TestConnect_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HelloRequest)
+func _TestService_CreateCache_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateCacheRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(TestServiceServer).TestConnect(ctx, in)
+		return srv.(TestServiceServer).CreateCache(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: TestService_TestConnect_FullMethodName,
+		FullMethod: TestService_CreateCache_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(TestServiceServer).TestConnect(ctx, req.(*HelloRequest))
+		return srv.(TestServiceServer).CreateCache(ctx, req.(*CreateCacheRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TestService_GetCacheKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCacheKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TestServiceServer).GetCacheKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TestService_GetCacheKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TestServiceServer).GetCacheKey(ctx, req.(*GetCacheKeyRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _TestService_SetCacheKey_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetCacheKeyRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TestServiceServer).SetCacheKey(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: TestService_SetCacheKey_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TestServiceServer).SetCacheKey(ctx, req.(*SetCacheKeyRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -118,8 +186,16 @@ var TestService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*TestServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "testConnect",
-			Handler:    _TestService_TestConnect_Handler,
+			MethodName: "CreateCache",
+			Handler:    _TestService_CreateCache_Handler,
+		},
+		{
+			MethodName: "GetCacheKey",
+			Handler:    _TestService_GetCacheKey_Handler,
+		},
+		{
+			MethodName: "SetCacheKey",
+			Handler:    _TestService_SetCacheKey_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

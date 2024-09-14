@@ -24,10 +24,10 @@ func NewCacheManager() *CacheManager {
 }
 
 func (m *CacheManager) CreateCache(config config.GoCacheConfig) iCache.ICache {
-	if _, exists := m.cacheMap[config.CacheName]; exists {
-		return nil
+	value, exists := m.cacheMap[config.CacheName]
+	if exists {
+		return value
 	}
-
 	cacheInstance := m.factory.GetCache(&config)
 	m.cacheMap[config.CacheName] = cacheInstance
 	m.configMap[config.CacheName] = config
