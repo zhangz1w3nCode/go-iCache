@@ -3,9 +3,8 @@ package register
 import (
 	"encoding/json"
 	"github.com/samuel/go-zookeeper/zk"
-	testpb "github.com/zhangz1w3nCode/go-iCache/internal/api/generate/helloworld"
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache/init"
 	userpb "github.com/zhangz1w3nCode/go-iCache/internal/api/generate/user"
-	testsvc "github.com/zhangz1w3nCode/go-iCache/internal/service/test"
 	usersvc "github.com/zhangz1w3nCode/go-iCache/internal/service/user"
 	"google.golang.org/grpc"
 	"log"
@@ -45,9 +44,8 @@ func RegisterZookeeper(zookeeperServers []string, serviceName string, ip string,
 }
 
 func RegisterCacheServcie(s *grpc.Server, serviceName, bizAppIp string, zkIp string) {
-	testService := testsvc.NewTestService()
-	userService := usersvc.NewUserService()
-	testpb.RegisterTestServiceServer(s, testService)
+	managerCache := init.NewCacheInit().CacheManager
+	userService := usersvc.NewUserService(managerCache)
 	userpb.RegisterUserServiceServer(s, userService)
 	info := s.GetServiceInfo()
 

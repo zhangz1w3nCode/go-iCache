@@ -9,20 +9,22 @@ import (
 
 type UserService struct {
 	user.UnimplementedUserServiceServer
-	logic *cache.TestLogic
+	logic   *cache.TestLogic
+	manager *manager.CacheManager
 }
 
-func NewUserService() *UserService {
+func NewUserService(mm *manager.CacheManager) *UserService {
 	return &UserService{
-		logic: cache.NewTestLogic(),
+		logic:   cache.NewTestLogic(),
+		manager: mm,
 	}
 }
 
 func (s *UserService) GetUser(ctx context.Context, in *user.GetUserRequest) (*user.GetUserResponse, error) {
 
-	userCache := manager.NewCacheManager().GetCache("user_cache")
+	icache := s.manager.GetCache("user_cache")
 
-	value := userCache.Get(in.GetUserID())
+	value := icache.Get(in.GetUserID())
 
 	return &user.GetUserResponse{UserName: value.Data.(string)}, nil
 }
