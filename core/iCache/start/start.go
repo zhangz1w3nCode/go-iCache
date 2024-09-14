@@ -1,4 +1,4 @@
-package init
+package start
 
 import (
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/manager"
