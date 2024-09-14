@@ -8,6 +8,7 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"strings"
 	"time"
 )
 
@@ -18,8 +19,10 @@ func RegisterService(zookeeperServers []string, serviceName, serviceAddress stri
 	}
 	defer zkConn.Close()
 
-	path := "/services/" + serviceName
-	if _, err := zkConn.Create(path, []byte(path), int32(0), zk.WorldACL(zk.PermAll)); err != nil {
+	path := "/" + serviceName
+	ips := strings.Join(GetIPs(), ",")
+	data := []byte("/" + serviceName + "/" + ips)
+	if _, err := zkConn.Create(path, data, int32(0), zk.WorldACL(zk.PermAll)); err != nil {
 		if err != zk.ErrNodeExists {
 			return err
 		}
@@ -55,4 +58,35 @@ func StartGRPCServer(serviceName, serviceAddress string) {
 		log.Fatalf("failed to serve: %v", err)
 		return
 	}
+}
+
+func GetIPs() []string {
+	// 获取本机的IP地址
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		log.Println("Error getting interface addresses:", err)
+		return nil
+	}
+
+	var ipList []string
+
+	for _, addr := range addrs {
+		// 检查地址是否是IPv4或IPv6
+		ip, ok := addr.(*net.IPNet)
+		if !ok {
+			continue
+		}
+
+		// 检查是否是回环地址（127.0.0.1）
+		if ip.IP.IsLoopback() {
+			continue
+		}
+
+		// 打印IPv4地址
+		if ip.IP.To4() != nil {
+			ipList = append(ipList, ip.IP.String())
+		}
+	}
+
+	return ipList
 }
