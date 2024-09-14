@@ -4,8 +4,8 @@ import (
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/value-wrapper"
 )
 
-// iCache 真正缓存的接口
-type iCache interface {
+// ICache 真正缓存的接口
+type ICache interface {
 	Get(key string) *value_wrapper.ValueWrapper
 	Set(key string, value interface{})
 	GetValues() []*value_wrapper.ValueWrapper

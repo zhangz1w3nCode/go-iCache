@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache/manager"
 	"github.com/zhangz1w3nCode/go-iCache/internal/api/generate/user"
 	"github.com/zhangz1w3nCode/go-iCache/internal/logic/cache"
 )
@@ -18,7 +19,10 @@ func NewUserService() *UserService {
 }
 
 func (s *UserService) GetUser(ctx context.Context, in *user.GetUserRequest) (*user.GetUserResponse, error) {
-	s.logic.SetCache(ctx, in.GetUserID(), "testSet")
-	value := s.logic.GetCache(ctx, in.GetUserID())
-	return &user.GetUserResponse{UserName: value}, nil
+
+	userCache := manager.NewCacheManager().GetCache("user_cache")
+
+	value := userCache.Get(in.GetUserID())
+
+	return &user.GetUserResponse{UserName: value.Data.(string)}, nil
 }
