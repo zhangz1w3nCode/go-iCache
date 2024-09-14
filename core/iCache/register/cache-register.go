@@ -19,7 +19,7 @@ func RegisterService(zookeeperServers []string, serviceName, serviceAddress stri
 	}
 	defer zkConn.Close()
 
-	path := "/" + serviceName
+	path := "/services/" + serviceName
 	ips := strings.Join(GetIPs(), ",")
 	data := []byte("/" + serviceName + "/" + ips)
 	if _, err := zkConn.Create(path, data, int32(0), zk.WorldACL(zk.PermAll)); err != nil {
