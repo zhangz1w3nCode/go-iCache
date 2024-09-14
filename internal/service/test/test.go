@@ -12,6 +12,10 @@ type TestService struct {
 	helloworld.UnimplementedTestServiceServer
 }
 
+func NewTestService() *TestService {
+	return &TestService{}
+}
+
 func (s *TestService) CreateCache(ctx context.Context,
 	in *helloworld.CreateCacheRequest) (*helloworld.CreateCacheReply, error) {
 
