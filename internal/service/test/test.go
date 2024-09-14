@@ -3,17 +3,20 @@ package test
 import (
 	"context"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/config"
-	"github.com/zhangz1w3nCode/go-iCache/core/iCache/register"
+	SS "github.com/zhangz1w3nCode/go-iCache/core/iCache/start"
 	"github.com/zhangz1w3nCode/go-iCache/internal/api/generate/helloworld"
 	"time"
 )
 
 type TestService struct {
 	helloworld.UnimplementedTestServiceServer
+	api *SS.CacheApi
 }
 
-func NewTestService() *TestService {
-	return &TestService{}
+func NewTestService(api *SS.CacheApi) *TestService {
+	return &TestService{
+		api: api,
+	}
 }
 
 func (s *TestService) CreateCache(ctx context.Context,
@@ -26,7 +29,7 @@ func (s *TestService) CreateCache(ctx context.Context,
 		CleanTime:  5 * time.Minute,
 	}
 
-	cacheAPI := register.CacheAPI
+	cacheAPI := s.api
 	cache, err := cacheAPI.CreateCache(cacheConfig)
 
 	if err != nil {
@@ -43,7 +46,7 @@ func (s *TestService) CreateCache(ctx context.Context,
 func (s *TestService) GetCacheKey(ctx context.Context,
 	in *helloworld.GetCacheKeyRequest) (*helloworld.GetCacheKeyReply, error) {
 
-	cacheAPI := register.CacheAPI
+	cacheAPI := s.api
 
 	value, err := cacheAPI.GetCacheKey(in.GetCacheKey(), in.GetCacheName())
 
@@ -61,7 +64,7 @@ func (s *TestService) GetCacheKey(ctx context.Context,
 func (s *TestService) SetCacheKey(ctx context.Context,
 	in *helloworld.SetCacheKeyRequest) (*helloworld.SetCacheKeyReply, error) {
 
-	cacheAPI := register.CacheAPI
+	cacheAPI := s.api
 
 	resp, err := cacheAPI.SetCacheKey(in.GetCacheName(), in.GetCacheKey(), in.GetCacheVal())
 
