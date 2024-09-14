@@ -3,19 +3,19 @@ package test
 import (
 	"context"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/config"
-	SS "github.com/zhangz1w3nCode/go-iCache/core/iCache/start"
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache/manager"
 	"github.com/zhangz1w3nCode/go-iCache/internal/api/generate/helloworld"
 	"time"
 )
 
 type TestService struct {
 	helloworld.UnimplementedTestServiceServer
-	api *SS.CacheApi
+	manager *manager.CacheManager
 }
 
-func NewTestService(api *SS.CacheApi) *TestService {
+func NewTestService(manager *manager.CacheManager) *TestService {
 	return &TestService{
-		api: api,
+		manager: manager,
 	}
 }
 
@@ -29,12 +29,7 @@ func (s *TestService) CreateCache(ctx context.Context,
 		CleanTime:  5 * time.Minute,
 	}
 
-	cacheAPI := s.api
-	cache, err := cacheAPI.CreateCache(cacheConfig)
-
-	if err != nil {
-		return &helloworld.CreateCacheReply{Message: "创建缓存失败"}, nil
-	}
+	cache := s.manager.CreateCache(cacheConfig)
 
 	if cache == nil {
 		return &helloworld.CreateCacheReply{Message: "创建缓存失败"}, nil
@@ -46,31 +41,27 @@ func (s *TestService) CreateCache(ctx context.Context,
 func (s *TestService) GetCacheKey(ctx context.Context,
 	in *helloworld.GetCacheKeyRequest) (*helloworld.GetCacheKeyReply, error) {
 
-	cacheAPI := s.api
+	cache := s.manager.GetCache(in.GetCacheName())
 
-	value, err := cacheAPI.GetCacheKey(in.GetCacheKey(), in.GetCacheName())
-
-	if err != nil {
-		return &helloworld.GetCacheKeyReply{CacheValue: "cache is empty"}, nil
-	}
-
-	if value == nil {
+	if cache == nil {
 		return &helloworld.GetCacheKeyReply{CacheValue: "cache value is empty"}, nil
 	}
 
-	return &helloworld.GetCacheKeyReply{CacheValue: value.GetCacheValue()}, nil
+	value := cache.Get(in.GetCacheKey())
+
+	return &helloworld.GetCacheKeyReply{CacheValue: value.Data.(string)}, nil
 }
 
 func (s *TestService) SetCacheKey(ctx context.Context,
 	in *helloworld.SetCacheKeyRequest) (*helloworld.SetCacheKeyReply, error) {
 
-	cacheAPI := s.api
+	cache := s.manager.GetCache(in.GetCacheName())
 
-	resp, err := cacheAPI.SetCacheKey(in.GetCacheName(), in.GetCacheKey(), in.GetCacheVal())
-
-	if err != nil {
-		return &helloworld.SetCacheKeyReply{CacheVa: "-1"}, nil
+	if cache == nil {
+		return &helloworld.SetCacheKeyReply{CacheVa: "cache value is empty"}, nil
 	}
 
-	return &helloworld.SetCacheKeyReply{CacheVa: resp.GetCacheVa()}, nil
+	cache.Set(in.GetCacheKey(), in.GetCacheVal())
+
+	return &helloworld.SetCacheKeyReply{CacheVa: "set successfully"}, nil
 }

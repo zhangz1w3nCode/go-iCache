@@ -55,7 +55,8 @@ func RegisterCacheServcie(s *grpc.Server, serviceName, bizAppIp string, zkIp str
 	userpb.RegisterUserServiceServer(s, userService)
 
 	CacheAPI = SS.NewCacheApi(managerCache)
-	testService := testsvc.NewTestService(CacheAPI)
+
+	testService := testsvc.NewTestService(managerCache)
 	testpb.RegisterTestServiceServer(s, testService)
 
 	info := s.GetServiceInfo()
