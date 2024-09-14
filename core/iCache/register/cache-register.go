@@ -14,10 +14,6 @@ import (
 	"time"
 )
 
-//func main() {
-//	StartGRPCServer("iCacheService", "192.168.31.84:9090", "192.168.31.84:2181")
-//}
-
 func RegisterService(zookeeperServers []string, serviceName string, ip string, info map[string]grpc.ServiceInfo) error {
 	zkConn, _, err := zk.Connect(zookeeperServers, time.Second*10)
 	if err != nil {
@@ -25,11 +21,24 @@ func RegisterService(zookeeperServers []string, serviceName string, ip string, i
 	}
 	defer zkConn.Close()
 
-	path := "/services/" + serviceName + "/" + ip
+	path0 := "/services"
+	if _, err := zkConn.Create(path0, nil, int32(0), zk.WorldACL(zk.PermAll)); err != nil {
+		if err == zk.ErrNoNode {
+			return err
+		}
+	}
+
+	path := "/services/" + serviceName
+	if _, err := zkConn.Create(path, nil, int32(0), zk.WorldACL(zk.PermAll)); err != nil {
+		if err == zk.ErrNoNode {
+			return err
+		}
+	}
+	path2 := "/services/" + serviceName + "/" + ip
 	infoStr, err := json.Marshal(info)
 	data := infoStr
-	if _, err := zkConn.Create(path, data, int32(0), zk.WorldACL(zk.PermAll)); err != nil {
-		if err != zk.ErrNodeExists {
+	if _, err := zkConn.Create(path2, data, int32(0), zk.WorldACL(zk.PermAll)); err != nil {
+		if err == zk.ErrNoNode {
 			return err
 		}
 	}
