@@ -8,13 +8,11 @@ import (
 	testsvc "github.com/zhangz1w3nCode/go-iCache/internal/service/test"
 	usersvc "github.com/zhangz1w3nCode/go-iCache/internal/service/user"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 	"log"
-	"net"
 	"time"
 )
 
-func RegisterService(zookeeperServers []string, serviceName string, ip string, info map[string]grpc.ServiceInfo) error {
+func RegisterZookeeper(zookeeperServers []string, serviceName string, ip string, info map[string]grpc.ServiceInfo) error {
 	zkConn, _, err := zk.Connect(zookeeperServers, time.Second*10)
 	if err != nil {
 		return err
@@ -46,29 +44,17 @@ func RegisterService(zookeeperServers []string, serviceName string, ip string, i
 	return nil
 }
 
-func StartGRPCServer(serviceName, bizAppIp string, zkIp string) {
-	listen, _ := net.Listen("tcp", bizAppIp)
-	s := grpc.NewServer()
-	reflection.Register(s)
+func RegisterCacheServcie(s *grpc.Server, serviceName, bizAppIp string, zkIp string) {
 	testService := testsvc.NewTestService()
 	userService := usersvc.NewUserService()
 	testpb.RegisterTestServiceServer(s, testService)
 	userpb.RegisterUserServiceServer(s, userService)
 	info := s.GetServiceInfo()
 
-	errZk := RegisterService([]string{zkIp}, serviceName, bizAppIp, info)
+	errZk := RegisterZookeeper([]string{zkIp}, serviceName, bizAppIp, info)
 
 	if errZk != nil {
 		log.Fatalf("failed to start zookeeper: %v", errZk)
-		return
-	}
-
-	err := s.Serve(listen)
-
-	log.Printf("server start in port: %s", bizAppIp)
-
-	if err != nil {
-		log.Fatalf("failed to serve: %v", err)
 		return
 	}
 }
