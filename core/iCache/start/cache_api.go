@@ -3,7 +3,7 @@ package start
 import (
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/config"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/manager"
-	"github.com/zhangz1w3nCode/go-iCache/internal/api/generate/helloworld"
+	"github.com/zhangz1w3nCode/go-iCache/internal/pb/generate/helloworld"
 )
 
 type CacheApi struct {

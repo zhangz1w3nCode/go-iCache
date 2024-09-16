@@ -1,10 +1,10 @@
 package test
 
-import (
+/*import (
 	"context"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/config"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/manager"
-	"github.com/zhangz1w3nCode/go-iCache/internal/api/generate/helloworld"
+	"github.com/zhangz1w3nCode/go-iCache/internal/pb/generate/helloworld"
 	"time"
 )
 
@@ -65,3 +65,4 @@ func (s *TestService) SetCacheKey(ctx context.Context,
 
 	return &helloworld.SetCacheKeyReply{CacheVa: "set successfully"}, nil
 }
+*/
