@@ -13,10 +13,6 @@ import (
 	"time"
 )
 
-var (
-	CacheAPI *SS.CacheApi
-)
-
 func RegisterZookeeper(zookeeperServers []string, serviceName string, ip string, info map[string]grpc.ServiceInfo) error {
 	zkConn, _, err := zk.Connect(zookeeperServers, time.Second*10)
 	if err != nil {
@@ -53,8 +49,6 @@ func RegisterCacheServcie(s *grpc.Server, serviceName, bizAppIp string, zkIp str
 	managerCache := SS.NewCacheInit().CacheManager
 	userService := usersvc.NewUserService(managerCache)
 	userpb.RegisterUserServiceServer(s, userService)
-
-	CacheAPI = SS.NewCacheApi(managerCache)
 
 	testService := testsvc.NewTestService(managerCache)
 	testpb.RegisterTestServiceServer(s, testService)
