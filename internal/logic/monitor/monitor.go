@@ -2,7 +2,6 @@ package test
 
 import (
 	"context"
-	"fmt"
 	"github.com/samuel/go-zookeeper/zk"
 	"github.com/zhangz1w3nCode/go-iCache/config"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/manager"
@@ -39,7 +38,19 @@ func (m *MonitorLogic) GetCacheUserAppNameList(ctx context.Context) ([]string, e
 		return nil, err
 	}
 
-	resource1, stat1, err1 := zkConn.Children("/services")
+	exists, stat, err := zkConn.Exists("/services")
+
+	if err != nil {
+		return nil, status.Errorf(codes.Unavailable, "Get path resource from zookeeper error!")
+	}
+	if stat == nil {
+		return nil, status.Errorf(codes.Unavailable, "Get path resource from zookeeper stat error!")
+	}
+	if !exists {
+		return nil, status.Errorf(codes.Unavailable, "Get path resource from zookeeper not exists!")
+	}
+
+	appNameList, stat1, err1 := zkConn.Children("/services")
 
 	if err1 != nil {
 		return nil, status.Errorf(codes.Unavailable, "Get path resource from zookeeper error!")
@@ -48,9 +59,7 @@ func (m *MonitorLogic) GetCacheUserAppNameList(ctx context.Context) ([]string, e
 		return nil, status.Errorf(codes.Unavailable, "Get path resource from zookeeper stat error!")
 	}
 
-	fmt.Println(resource1)
-
-	return nil, status.Errorf(codes.Unimplemented, "method GetCacheUserAppNameList not implemented")
+	return appNameList, nil
 }
 func (m *MonitorLogic) GetCacheNameList(ctx context.Context, appName string) ([]string, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCacheNameList not implemented")
