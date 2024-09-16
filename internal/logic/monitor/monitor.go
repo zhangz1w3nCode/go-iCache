@@ -39,7 +39,7 @@ func (m *MonitorLogic) GetCacheUserAppNameList(ctx context.Context) ([]string, e
 		return nil, err
 	}
 
-	resource1, stat1, err1 := zkConn.Get("/services")
+	resource1, stat1, err1 := zkConn.Children("/services")
 
 	if err1 != nil {
 		return nil, status.Errorf(codes.Unavailable, "Get path resource from zookeeper error!")
@@ -48,7 +48,7 @@ func (m *MonitorLogic) GetCacheUserAppNameList(ctx context.Context) ([]string, e
 		return nil, status.Errorf(codes.Unavailable, "Get path resource from zookeeper stat error!")
 	}
 
-	fmt.Println(string(resource1))
+	fmt.Println(resource1)
 
 	return nil, status.Errorf(codes.Unimplemented, "method GetCacheUserAppNameList not implemented")
 }

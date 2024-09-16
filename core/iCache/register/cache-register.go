@@ -2,7 +2,6 @@ package register
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/samuel/go-zookeeper/zk"
 	"github.com/zhangz1w3nCode/go-iCache/config"
 	start "github.com/zhangz1w3nCode/go-iCache/core/iCache/start"
@@ -43,11 +42,7 @@ func RegisterZookeeper(zookeeperServers []string, serviceName string, ip string,
 			return err
 		}
 	}
-
-	resource1, _, _ := zkConn.Get("/services")
-
-	fmt.Println(string(resource1))
-
+	
 	return nil
 }
 
