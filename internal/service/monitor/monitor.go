@@ -19,10 +19,24 @@ func NewMonitorService(manager *manager.CacheManager) *MonitorService {
 }
 
 func (m *MonitorService) GetCacheUserIpList(ctx context.Context, req *monitorpb.GetCacheUserIpListRequest) (*monitorpb.GetCacheUserIpListResponse, error) {
-	return &monitorpb.GetCacheUserIpListResponse{UserCacheIpList: make([]string, 0)}, nil
+
+	ipList, err := m.monitorLogic.GetCacheUserIpList(ctx, req.GetAppName())
+
+	if err != nil {
+		return &monitorpb.GetCacheUserIpListResponse{UserCacheIpList: []string{}}, nil
+	}
+
+	return &monitorpb.GetCacheUserIpListResponse{UserCacheIpList: ipList}, nil
 }
 func (m *MonitorService) GetCacheUserAppNameList(ctx context.Context, req *monitorpb.GetCacheUserAppNameListRequest) (*monitorpb.GetCacheUserAppNameListResponse, error) {
-	return &monitorpb.GetCacheUserAppNameListResponse{UserCacheAppNameList: make([]string, 0)}, nil
+
+	AppNameList, err := m.monitorLogic.GetCacheUserAppNameList(ctx)
+
+	if err != nil {
+		return &monitorpb.GetCacheUserAppNameListResponse{UserCacheAppNameList: []string{}}, nil
+	}
+
+	return &monitorpb.GetCacheUserAppNameListResponse{UserCacheAppNameList: AppNameList}, nil
 }
 func (m *MonitorService) GetCacheNameList(ctx context.Context, req *monitorpb.GetCacheNameListRequest) (*monitorpb.GetCacheNameListResponse, error) {
 	return &monitorpb.GetCacheNameListResponse{CacheNameList: make([]string, 0)}, nil

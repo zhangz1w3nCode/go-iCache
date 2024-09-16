@@ -9,3 +9,4 @@ database:
   connection_max_lifetime: 3600000
 debug: true
 ginMode: debug
+zk_address: 192.168.31.84:2181
