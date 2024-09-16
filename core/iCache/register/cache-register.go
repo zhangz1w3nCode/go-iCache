@@ -19,7 +19,6 @@ func RegisterZookeeper(zookeeperServers []string, serviceName string, ip string,
 		return err
 	}
 	defer func() {
-		fmt.Println("关闭zk一些资源")
 		zkConn.Close()
 	}()
 
@@ -44,6 +43,10 @@ func RegisterZookeeper(zookeeperServers []string, serviceName string, ip string,
 			return err
 		}
 	}
+
+	resource1, _, _ := zkConn.Get("/services")
+
+	fmt.Println(string(resource1))
 
 	return nil
 }
