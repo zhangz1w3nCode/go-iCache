@@ -3,6 +3,7 @@ package register
 import (
 	"encoding/json"
 	"github.com/samuel/go-zookeeper/zk"
+	"github.com/zhangz1w3nCode/go-iCache/config"
 	start "github.com/zhangz1w3nCode/go-iCache/core/iCache/start"
 	monitorsvc "github.com/zhangz1w3nCode/go-iCache/internal/service/monitor"
 	monitorpb "github.com/zhangz1w3nCode/go-iCache/pb/generate/cache-monitor"
@@ -44,6 +45,9 @@ func RegisterZookeeper(zookeeperServers []string, serviceName string, ip string,
 }
 
 func RegisterCacheServcie(s *grpc.Server, serviceName, bizAppIp string, zkIp string) {
+	//读取配置文件地址设置
+	config.Init("./config/config.yaml")
+
 	managerCache := start.NewCacheInit().CacheManager
 	monitorService := monitorsvc.NewMonitorService(managerCache)
 	monitorpb.RegisterCacheMonitorServiceServer(s, monitorService)
