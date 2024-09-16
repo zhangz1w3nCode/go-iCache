@@ -2,6 +2,7 @@ package register
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/samuel/go-zookeeper/zk"
 	"github.com/zhangz1w3nCode/go-iCache/config"
 	start "github.com/zhangz1w3nCode/go-iCache/core/iCache/start"
@@ -17,7 +18,10 @@ func RegisterZookeeper(zookeeperServers []string, serviceName string, ip string,
 	if err != nil {
 		return err
 	}
-	defer zkConn.Close()
+	defer func() {
+		fmt.Println("关闭zk一些资源")
+		zkConn.Close()
+	}()
 
 	path0 := "/services"
 	if _, err := zkConn.Create(path0, nil, int32(0), zk.WorldACL(zk.PermAll)); err != nil {
