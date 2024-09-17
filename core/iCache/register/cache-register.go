@@ -13,13 +13,20 @@ import (
 )
 
 func RegisterZookeeper(zookeeperServers []string, serviceName string, ip string, info map[string]grpc.ServiceInfo) error {
-	zkConn, _, err := zk.Connect(zookeeperServers, time.Second*1000)
+	zkConn, _, err := zk.Connect(zookeeperServers, time.Second*10)
 	if err != nil {
 		return err
 	}
 	defer func() {
 		zkConn.Close()
 	}()
+
+	p := "/"
+	if _, err := zkConn.Create(p, nil, int32(0), zk.WorldACL(zk.PermAll)); err != nil {
+		if err == zk.ErrNoNode {
+			return err
+		}
+	}
 
 	path0 := "/services"
 	if _, err := zkConn.Create(path0, nil, int32(0), zk.WorldACL(zk.PermAll)); err != nil {
