@@ -37,3 +37,11 @@ func (m *CacheManager) CreateCache(config config.GoCacheConfig) iCache.ICache {
 func (m *CacheManager) GetCache(cacheName string) iCache.ICache {
 	return m.cacheMap[cacheName]
 }
+
+func (m *CacheManager) GetAllCacheName() []string {
+	var cacheNameList []string
+	for key := range m.cacheMap {
+		cacheNameList = append(cacheNameList, key)
+	}
+	return cacheNameList
+}

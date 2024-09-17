@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	CacheMonitorService_GetCacheUserIpList_FullMethodName      = "/user.CacheMonitorService/GetCacheUserIpList"
+	CacheMonitorService_GetCacheUserAddressList_FullMethodName = "/user.CacheMonitorService/GetCacheUserAddressList"
 	CacheMonitorService_GetCacheUserAppNameList_FullMethodName = "/user.CacheMonitorService/GetCacheUserAppNameList"
 	CacheMonitorService_GetCacheNameList_FullMethodName        = "/user.CacheMonitorService/GetCacheNameList"
 )
@@ -29,7 +29,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CacheMonitorServiceClient interface {
 	// 获取使用了iCache的机器的ip:哪个appName对应的机器用了iCache
-	GetCacheUserIpList(ctx context.Context, in *GetCacheUserIpListRequest, opts ...grpc.CallOption) (*GetCacheUserIpListResponse, error)
+	GetCacheUserAddressList(ctx context.Context, in *GetCacheUserAddressListRequest, opts ...grpc.CallOption) (*GetCacheUserAddressListResponse, error)
 	// 获取使用了iCache的服务名称列表：biz-app、query-app
 	GetCacheUserAppNameList(ctx context.Context, in *GetCacheUserAppNameListRequest, opts ...grpc.CallOption) (*GetCacheUserAppNameListResponse, error)
 	// 该AppName下有哪些缓存：如productCache、userCache
@@ -44,10 +44,10 @@ func NewCacheMonitorServiceClient(cc grpc.ClientConnInterface) CacheMonitorServi
 	return &cacheMonitorServiceClient{cc}
 }
 
-func (c *cacheMonitorServiceClient) GetCacheUserIpList(ctx context.Context, in *GetCacheUserIpListRequest, opts ...grpc.CallOption) (*GetCacheUserIpListResponse, error) {
+func (c *cacheMonitorServiceClient) GetCacheUserAddressList(ctx context.Context, in *GetCacheUserAddressListRequest, opts ...grpc.CallOption) (*GetCacheUserAddressListResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetCacheUserIpListResponse)
-	err := c.cc.Invoke(ctx, CacheMonitorService_GetCacheUserIpList_FullMethodName, in, out, cOpts...)
+	out := new(GetCacheUserAddressListResponse)
+	err := c.cc.Invoke(ctx, CacheMonitorService_GetCacheUserAddressList_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +79,7 @@ func (c *cacheMonitorServiceClient) GetCacheNameList(ctx context.Context, in *Ge
 // for forward compatibility.
 type CacheMonitorServiceServer interface {
 	// 获取使用了iCache的机器的ip:哪个appName对应的机器用了iCache
-	GetCacheUserIpList(context.Context, *GetCacheUserIpListRequest) (*GetCacheUserIpListResponse, error)
+	GetCacheUserAddressList(context.Context, *GetCacheUserAddressListRequest) (*GetCacheUserAddressListResponse, error)
 	// 获取使用了iCache的服务名称列表：biz-app、query-app
 	GetCacheUserAppNameList(context.Context, *GetCacheUserAppNameListRequest) (*GetCacheUserAppNameListResponse, error)
 	// 该AppName下有哪些缓存：如productCache、userCache
@@ -94,8 +94,8 @@ type CacheMonitorServiceServer interface {
 // pointer dereference when methods are called.
 type UnimplementedCacheMonitorServiceServer struct{}
 
-func (UnimplementedCacheMonitorServiceServer) GetCacheUserIpList(context.Context, *GetCacheUserIpListRequest) (*GetCacheUserIpListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCacheUserIpList not implemented")
+func (UnimplementedCacheMonitorServiceServer) GetCacheUserAddressList(context.Context, *GetCacheUserAddressListRequest) (*GetCacheUserAddressListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCacheUserAddressList not implemented")
 }
 func (UnimplementedCacheMonitorServiceServer) GetCacheUserAppNameList(context.Context, *GetCacheUserAppNameListRequest) (*GetCacheUserAppNameListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCacheUserAppNameList not implemented")
@@ -124,20 +124,20 @@ func RegisterCacheMonitorServiceServer(s grpc.ServiceRegistrar, srv CacheMonitor
 	s.RegisterService(&CacheMonitorService_ServiceDesc, srv)
 }
 
-func _CacheMonitorService_GetCacheUserIpList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetCacheUserIpListRequest)
+func _CacheMonitorService_GetCacheUserAddressList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCacheUserAddressListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(CacheMonitorServiceServer).GetCacheUserIpList(ctx, in)
+		return srv.(CacheMonitorServiceServer).GetCacheUserAddressList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: CacheMonitorService_GetCacheUserIpList_FullMethodName,
+		FullMethod: CacheMonitorService_GetCacheUserAddressList_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(CacheMonitorServiceServer).GetCacheUserIpList(ctx, req.(*GetCacheUserIpListRequest))
+		return srv.(CacheMonitorServiceServer).GetCacheUserAddressList(ctx, req.(*GetCacheUserAddressListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -186,8 +186,8 @@ var CacheMonitorService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*CacheMonitorServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetCacheUserIpList",
-			Handler:    _CacheMonitorService_GetCacheUserIpList_Handler,
+			MethodName: "GetCacheUserAddressList",
+			Handler:    _CacheMonitorService_GetCacheUserAddressList_Handler,
 		},
 		{
 			MethodName: "GetCacheUserAppNameList",
