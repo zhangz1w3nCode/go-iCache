@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package user;
+
+option go_package = "../generate/cache-monitor";
+
+
+service CacheMonitorService {
+  //获取使用了iCache的机器的ip:哪个appName对应的机器用了iCache
+  rpc GetCacheUserAddressList (GetCacheUserAddressListRequest) returns (GetCacheUserAddressListResponse) {}
+
+  //获取使用了iCache的服务名称列表：biz-app、query-app
+  rpc GetCacheUserAppNameList (GetCacheUserAppNameListRequest) returns (GetCacheUserAppNameListResponse) {}
+
+  //该AppName下有哪些缓存：如productCache、userCache
+  rpc GetCacheNameList (GetCacheNameListRequest) returns (GetCacheNameListResponse) {}
+
+  //查看某个缓存的所有keys
+  rpc GetCacheKeyList (GetCacheKeyListRequest) returns (GetCacheKeyListResponse) {}
+
+  //查询某个缓存的某个key的value
+  rpc GetValueToCacheUser (GetValueToCacheUserRequest) returns (GetValueToCacheUserResponse) {}
+}
+
+message GetCacheUserAddressListRequest {
+  string AppName=1;
+}
+
+
+message GetCacheUserAddressListResponse {
+  repeated string UserCacheAddressList = 1;
+}
+
+message GetCacheUserAppNameListRequest {
+}
+
+
+message GetCacheUserAppNameListResponse {
+  repeated string UserCacheAppNameList = 1;
+}
+
+message GetCacheNameListRequest {
+}
+
+
+message GetCacheNameListResponse {
+  repeated string CacheNameList = 1;
+}
+
+message GetCacheKeyListRequest {
+  string CacheName=1;
+}
+
+
+message GetCacheKeyListResponse {
+  repeated string CacheKeyList=1;
+}
+
+
+message GetValueToCacheUserRequest {
+  string CacheName=1;
+  string CacheKey=2;
+}
+
+
+message GetValueToCacheUserResponse {
+  string CacheValue=1;
+}

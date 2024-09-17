@@ -47,3 +47,23 @@ func (m *MonitorService) GetCacheNameList(ctx context.Context, req *monitorpb.Ge
 
 	return &monitorpb.GetCacheNameListResponse{CacheNameList: cacheNameList}, nil
 }
+
+func (m *MonitorService) GetCacheKeyList(ctx context.Context, req *monitorpb.GetCacheKeyListRequest) (*monitorpb.GetCacheKeyListResponse, error) {
+
+	cacheNameList, err := m.monitorLogic.GetCacheKeyList(req.GetCacheName())
+
+	if err != nil {
+		return &monitorpb.GetCacheKeyListResponse{CacheKeyList: []string{}}, nil
+	}
+
+	return &monitorpb.GetCacheKeyListResponse{CacheKeyList: cacheNameList}, nil
+}
+func (m *MonitorService) GetValueToCacheUser(ctx context.Context, req *monitorpb.GetValueToCacheUserRequest) (*monitorpb.GetValueToCacheUserResponse, error) {
+	cacheNameList, err := m.monitorLogic.GetValueToCacheUser(req.GetCacheName(), req.GetCacheKey())
+
+	if err != nil {
+		return &monitorpb.GetValueToCacheUserResponse{CacheValue: ""}, nil
+	}
+
+	return &monitorpb.GetValueToCacheUserResponse{CacheValue: cacheNameList}, nil
+}

@@ -35,7 +35,11 @@ func (m *CacheManager) CreateCache(config config.GoCacheConfig) iCache.ICache {
 }
 
 func (m *CacheManager) GetCache(cacheName string) iCache.ICache {
-	return m.cacheMap[cacheName]
+	cache, exists := m.cacheMap[cacheName]
+	if !exists {
+		return nil
+	}
+	return cache
 }
 
 func (m *CacheManager) GetAllCacheName() []string {

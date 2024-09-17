@@ -2,6 +2,7 @@ package test
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/samuel/go-zookeeper/zk"
 	"github.com/zhangz1w3nCode/go-iCache/config"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/manager"
@@ -115,4 +116,32 @@ func (m *MonitorLogic) GetCacheUserAppNameList(ctx context.Context) ([]string, e
 func (m *MonitorLogic) GetCacheNameList() ([]string, error) {
 	cacheName := m.manager.GetAllCacheName()
 	return cacheName, nil
+}
+
+// GetCacheKeyList 获取cache的key列表
+func (m *MonitorLogic) GetCacheKeyList(cacheName string) ([]string, error) {
+	cache := m.manager.GetCache(cacheName)
+	if cache == nil {
+		return nil, status.Errorf(codes.Unavailable, "Get cache "+cacheName+" from cache manager error!")
+	}
+	keyList := cache.GetKeys()
+	return keyList, nil
+}
+
+// GetValueToCacheUser 获取某个缓存的value
+func (m *MonitorLogic) GetValueToCacheUser(cacheName string, cacheKey string) (string, error) {
+	cache := m.manager.GetCache(cacheName)
+	if cache == nil {
+		return "", status.Errorf(codes.Unavailable, "Get cache "+cacheName+" from cache manager error!")
+	}
+	valueWrapper := cache.Get(cacheKey)
+	if valueWrapper == nil {
+		return "", status.Errorf(codes.Unavailable, "Get cache value ["+cacheName+","+cacheKey+"] from cache manager error!")
+	}
+	valueByte, err := json.Marshal(valueWrapper)
+	if err != nil {
+		return "", err
+	}
+	valueStr := string(valueByte)
+	return valueStr, nil
 }

@@ -22,6 +22,8 @@ const (
 	CacheMonitorService_GetCacheUserAddressList_FullMethodName = "/user.CacheMonitorService/GetCacheUserAddressList"
 	CacheMonitorService_GetCacheUserAppNameList_FullMethodName = "/user.CacheMonitorService/GetCacheUserAppNameList"
 	CacheMonitorService_GetCacheNameList_FullMethodName        = "/user.CacheMonitorService/GetCacheNameList"
+	CacheMonitorService_GetCacheKeyList_FullMethodName         = "/user.CacheMonitorService/GetCacheKeyList"
+	CacheMonitorService_GetValueToCacheUser_FullMethodName     = "/user.CacheMonitorService/GetValueToCacheUser"
 )
 
 // CacheMonitorServiceClient is the client API for CacheMonitorService service.
@@ -34,6 +36,10 @@ type CacheMonitorServiceClient interface {
 	GetCacheUserAppNameList(ctx context.Context, in *GetCacheUserAppNameListRequest, opts ...grpc.CallOption) (*GetCacheUserAppNameListResponse, error)
 	// 该AppName下有哪些缓存：如productCache、userCache
 	GetCacheNameList(ctx context.Context, in *GetCacheNameListRequest, opts ...grpc.CallOption) (*GetCacheNameListResponse, error)
+	// 查看某个缓存的所有keys
+	GetCacheKeyList(ctx context.Context, in *GetCacheKeyListRequest, opts ...grpc.CallOption) (*GetCacheKeyListResponse, error)
+	// 查询某个缓存的某个key的value
+	GetValueToCacheUser(ctx context.Context, in *GetValueToCacheUserRequest, opts ...grpc.CallOption) (*GetValueToCacheUserResponse, error)
 }
 
 type cacheMonitorServiceClient struct {
@@ -74,6 +80,26 @@ func (c *cacheMonitorServiceClient) GetCacheNameList(ctx context.Context, in *Ge
 	return out, nil
 }
 
+func (c *cacheMonitorServiceClient) GetCacheKeyList(ctx context.Context, in *GetCacheKeyListRequest, opts ...grpc.CallOption) (*GetCacheKeyListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetCacheKeyListResponse)
+	err := c.cc.Invoke(ctx, CacheMonitorService_GetCacheKeyList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *cacheMonitorServiceClient) GetValueToCacheUser(ctx context.Context, in *GetValueToCacheUserRequest, opts ...grpc.CallOption) (*GetValueToCacheUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetValueToCacheUserResponse)
+	err := c.cc.Invoke(ctx, CacheMonitorService_GetValueToCacheUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CacheMonitorServiceServer is the server API for CacheMonitorService service.
 // All implementations must embed UnimplementedCacheMonitorServiceServer
 // for forward compatibility.
@@ -84,6 +110,10 @@ type CacheMonitorServiceServer interface {
 	GetCacheUserAppNameList(context.Context, *GetCacheUserAppNameListRequest) (*GetCacheUserAppNameListResponse, error)
 	// 该AppName下有哪些缓存：如productCache、userCache
 	GetCacheNameList(context.Context, *GetCacheNameListRequest) (*GetCacheNameListResponse, error)
+	// 查看某个缓存的所有keys
+	GetCacheKeyList(context.Context, *GetCacheKeyListRequest) (*GetCacheKeyListResponse, error)
+	// 查询某个缓存的某个key的value
+	GetValueToCacheUser(context.Context, *GetValueToCacheUserRequest) (*GetValueToCacheUserResponse, error)
 	mustEmbedUnimplementedCacheMonitorServiceServer()
 }
 
@@ -102,6 +132,12 @@ func (UnimplementedCacheMonitorServiceServer) GetCacheUserAppNameList(context.Co
 }
 func (UnimplementedCacheMonitorServiceServer) GetCacheNameList(context.Context, *GetCacheNameListRequest) (*GetCacheNameListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetCacheNameList not implemented")
+}
+func (UnimplementedCacheMonitorServiceServer) GetCacheKeyList(context.Context, *GetCacheKeyListRequest) (*GetCacheKeyListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCacheKeyList not implemented")
+}
+func (UnimplementedCacheMonitorServiceServer) GetValueToCacheUser(context.Context, *GetValueToCacheUserRequest) (*GetValueToCacheUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetValueToCacheUser not implemented")
 }
 func (UnimplementedCacheMonitorServiceServer) mustEmbedUnimplementedCacheMonitorServiceServer() {}
 func (UnimplementedCacheMonitorServiceServer) testEmbeddedByValue()                             {}
@@ -178,6 +214,42 @@ func _CacheMonitorService_GetCacheNameList_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CacheMonitorService_GetCacheKeyList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCacheKeyListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CacheMonitorServiceServer).GetCacheKeyList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CacheMonitorService_GetCacheKeyList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CacheMonitorServiceServer).GetCacheKeyList(ctx, req.(*GetCacheKeyListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CacheMonitorService_GetValueToCacheUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetValueToCacheUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CacheMonitorServiceServer).GetValueToCacheUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CacheMonitorService_GetValueToCacheUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CacheMonitorServiceServer).GetValueToCacheUser(ctx, req.(*GetValueToCacheUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CacheMonitorService_ServiceDesc is the grpc.ServiceDesc for CacheMonitorService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -196,6 +268,14 @@ var CacheMonitorService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetCacheNameList",
 			Handler:    _CacheMonitorService_GetCacheNameList_Handler,
+		},
+		{
+			MethodName: "GetCacheKeyList",
+			Handler:    _CacheMonitorService_GetCacheKeyList_Handler,
+		},
+		{
+			MethodName: "GetValueToCacheUser",
+			Handler:    _CacheMonitorService_GetValueToCacheUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
