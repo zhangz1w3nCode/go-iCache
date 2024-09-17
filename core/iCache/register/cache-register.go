@@ -13,7 +13,7 @@ import (
 )
 
 func RegisterZookeeper(zookeeperServers []string, serviceName string, ip string, info map[string]grpc.ServiceInfo) error {
-	zkConn, _, err := zk.Connect(zookeeperServers, time.Second*10)
+	zkConn, _, err := zk.Connect(zookeeperServers, time.Second*1000)
 	if err != nil {
 		return err
 	}
