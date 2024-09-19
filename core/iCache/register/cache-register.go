@@ -100,7 +100,7 @@ func ServerPostHandler(serverName string, serverAddress string, zkAddress string
 		log.Fatalf("Get path resource from zookeeper stat error! %v", err)
 	}
 	if stat == nil {
-		log.Fatalf("Get path resource from zookeeper stat error! %v", err)
+		log.Printf("Get path resource from zookeeper stat error! %v", err)
 	}
 	if !exists {
 		log.Printf("services.%s has been deleted!", serverName)
@@ -114,7 +114,7 @@ func ServerPostHandler(serverName string, serverAddress string, zkAddress string
 		log.Fatalf("Get path resource from zookeeper stat error! %v", err)
 	}
 	if stat == nil {
-		log.Fatalf("Get path resource from zookeeper stat error! %v", err)
+		log.Printf("Get path resource from zookeeper stat error! %v", err)
 	}
 	if !exists {
 		log.Printf("services.%s.%s has been deleted!", serverName, serverAddress)
@@ -125,6 +125,48 @@ func ServerPostHandler(serverName string, serverAddress string, zkAddress string
 	path := "/services/" + serverName + "/" + serverAddress
 	if err = zkConn.Delete(path, int32(0)); err != nil {
 		log.Printf("Delete services.%s.%s error!", serverName, serverAddress)
+	}
+
+	//services节点下的serverName节点的具体机器注册的节点是否存在
+	//exists, stat, err = zkConn.Exists("/services/" + serverName)
+	//
+	//if err != nil {
+	//	log.Fatalf("Get path resource from zookeeper stat error! %v", err)
+	//}
+	//if stat == nil {
+	//	log.Fatalf("Get path resource from zookeeper stat error! %v", err)
+	//}
+	//if !exists {
+	//	log.Printf("services.%s.%s has been deleted!", serverName, serverAddress)
+	//	return
+	//}
+
+	exists, stat, err = zkConn.Exists("/services/" + serverName)
+
+	if err != nil {
+		log.Printf("Get path resource from zookeeper stat error! %v", err)
+	}
+	if stat == nil {
+		log.Printf("Get path resource from zookeeper stat error! %v", err)
+	}
+	if !exists {
+		log.Printf("services.%s.%s has been deleted!", serverName, serverAddress)
+		return
+	}
+
+	children, stat, err := zkConn.Children("/services/" + serverName)
+	if err != nil {
+		log.Printf("Get path resource from zookeeper stat error! %v", err)
+	}
+	if stat == nil {
+		log.Printf("Get path resource from zookeeper stat error! %v", err)
+	}
+	if len(children) == 0 {
+		//删除services节点下的serverName节点
+		path = "/services/" + serverName
+		if err = zkConn.Delete(path, int32(0)); err != nil {
+			log.Printf("Delete services.%s error!", serverName)
+		}
 	}
 
 	log.Printf("Delete %sservices.%s.%s%s successful!", "[", serverName, serverAddress, "]")
