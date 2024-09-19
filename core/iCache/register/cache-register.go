@@ -126,7 +126,7 @@ func ServerPostHandler(serverName string, serverAddress string, zkAddress string
 	if err = zkConn.Delete(path, int32(0)); err != nil {
 		log.Printf("Delete services.%s.%s error!", serverName, serverAddress)
 	}
-	log.Printf("Delete#1 services.%s.%s successful!", serverName, serverAddress)
+
 	//services节点下的serverName节点的具体机器注册的节点是否存在
 	//exists, stat, err = zkConn.Exists("/services/" + serverName)
 	//
@@ -153,7 +153,6 @@ func ServerPostHandler(serverName string, serverAddress string, zkAddress string
 		log.Printf("services.%s has been deleted!", serverName)
 		return
 	}
-	log.Printf("services.%s exist!", serverName)
 
 	children, stat, err := zkConn.Children("/services/" + serverName)
 	if err != nil {
@@ -162,15 +161,13 @@ func ServerPostHandler(serverName string, serverAddress string, zkAddress string
 	if stat == nil {
 		log.Printf("Get path resource from zookeeper stat error! %v", err)
 	}
-	log.Printf("services.%s children:", children)
+
 	if len(children) == 0 {
-		log.Printf("services.%s children nums is 0!", serverName)
 		//删除services节点下的serverName节点
 		path = "/services/" + serverName
 		if err = zkConn.Delete(path, int32(0)); err != nil {
 			log.Printf("Delete services.%s error!", serverName)
 		}
-		log.Printf("Delete#2 %sservices.%s%s successful!", "[", serverName, "]")
 	}
-	log.Printf("Delete#3 %sservices.%s.%s%s successful!", "[", serverName, serverAddress, "]")
+	log.Printf("Delete %sservices.%s.%s%s successful!", "[", serverName, serverAddress, "]")
 }
