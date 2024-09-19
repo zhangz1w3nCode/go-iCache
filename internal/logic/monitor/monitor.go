@@ -138,15 +138,15 @@ func (m *MonitorLogic) GetCacheKeyList(cacheName string) ([]string, error) {
 func (m *MonitorLogic) GetValueToCacheUser(cacheName string, cacheKey string) (string, error) {
 	cache := m.manager.GetCache(cacheName)
 	if cache == nil {
-		return "{}", status.Errorf(codes.Unavailable, "Get cache "+cacheName+" from cache manager error!")
+		return "", status.Errorf(codes.Unavailable, "Get cache "+cacheName+" from cache manager error!")
 	}
 	valueWrapper := cache.Get(cacheKey)
 	if valueWrapper == nil {
-		return "{}", status.Errorf(codes.Unavailable, "Get cache value ["+cacheName+","+cacheKey+"] from cache manager error!")
+		return "", status.Errorf(codes.Unavailable, "Get cache value ["+cacheName+","+cacheKey+"] from cache manager error!")
 	}
 	valueByte, err := json.Marshal(valueWrapper)
 	if err != nil {
-		return "{}", err
+		return "", err
 	}
 	valueStr := string(valueByte)
 	if valueStr == "" {
