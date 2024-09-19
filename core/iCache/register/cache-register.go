@@ -126,7 +126,7 @@ func ServerPostHandler(serverName string, serverAddress string, zkAddress string
 	if err = zkConn.Delete(path, int32(0)); err != nil {
 		log.Printf("Delete services.%s.%s error!", serverName, serverAddress)
 	}
-	log.Printf("Delete services.%s.%s successful!", serverName, serverAddress)
+	log.Printf("Delete#1 services.%s.%s successful!", serverName, serverAddress)
 	//services节点下的serverName节点的具体机器注册的节点是否存在
 	//exists, stat, err = zkConn.Exists("/services/" + serverName)
 	//
@@ -170,8 +170,7 @@ func ServerPostHandler(serverName string, serverAddress string, zkAddress string
 		if err = zkConn.Delete(path, int32(0)); err != nil {
 			log.Printf("Delete services.%s error!", serverName)
 		}
-		log.Printf("Delete %sservices.%s%s successful!", "[", serverName, "]")
+		log.Printf("Delete#2 %sservices.%s%s successful!", "[", serverName, "]")
 	}
-
-	log.Printf("Delete %sservices.%s.%s%s successful!", "[", serverName, serverAddress, "]")
+	log.Printf("Delete#3 %sservices.%s.%s%s successful!", "[", serverName, serverAddress, "]")
 }
