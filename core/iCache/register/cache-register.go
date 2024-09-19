@@ -68,3 +68,64 @@ func RegisterCacheServcie(s *grpc.Server, serviceName, bizAppIp string, zkIp str
 		log.Fatalf("failed to start zookeeper: %v", errZk)
 	}
 }
+
+// ServerPostHandler 关闭资源
+func ServerPostHandler(serverName string, serverAddress string, zkAddress string) {
+	//注销之前注册到zk的服务的grpc信息
+
+	// 连接zookeeper
+	zkConn, _, err := zk.Connect([]string{zkAddress}, time.Second*10)
+	if err != nil {
+		log.Fatalf("Connect Remote Server Error! %v", err)
+	}
+
+	// 检查services节点是否存在
+	exists, stat, err := zkConn.Exists("/services")
+
+	if err != nil {
+		log.Fatalf("Get path resource from zookeeper stat error! %v", err)
+	}
+	if stat == nil {
+		log.Fatalf("Get path resource from zookeeper stat error! %v", err)
+	}
+	if !exists {
+		log.Printf("services has been deleted!")
+		return
+	}
+
+	//services节点下的serverName节点是否存在
+	exists, stat, err = zkConn.Exists("/services/" + serverName)
+
+	if err != nil {
+		log.Fatalf("Get path resource from zookeeper stat error! %v", err)
+	}
+	if stat == nil {
+		log.Fatalf("Get path resource from zookeeper stat error! %v", err)
+	}
+	if !exists {
+		log.Printf("services.%s has been deleted!", serverName)
+		return
+	}
+
+	//services节点下的serverName节点的具体机器注册的节点是否存在
+	exists, stat, err = zkConn.Exists("/services/" + serverName + "/" + serverAddress)
+
+	if err != nil {
+		log.Fatalf("Get path resource from zookeeper stat error! %v", err)
+	}
+	if stat == nil {
+		log.Fatalf("Get path resource from zookeeper stat error! %v", err)
+	}
+	if !exists {
+		log.Printf("services.%s.%s has been deleted!", serverName, serverAddress)
+		return
+	}
+
+	//删除services节点下的serverName节点
+	path := "/services/" + serverName + "/" + serverAddress
+	if err = zkConn.Delete(path, int32(0)); err != nil {
+		log.Printf("Delete services.%s.%s error!", serverName, serverAddress)
+	}
+
+	log.Printf("Delete %sservices.%s.%s%s successful!", "[", serverName, serverAddress, "]")
+}
