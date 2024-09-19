@@ -142,11 +142,11 @@ func (m *MonitorLogic) GetValueToCacheUser(cacheName string, cacheKey string) (s
 	}
 	valueWrapper := cache.Get(cacheKey)
 	if valueWrapper == nil {
-		return "", status.Errorf(codes.Unavailable, "Get cache value ["+cacheName+","+cacheKey+"] from cache manager error!")
+		return "{}", nil
 	}
 	valueByte, err := json.Marshal(valueWrapper)
 	if err != nil {
-		return "", err
+		return "{}", err
 	}
 	valueStr := string(valueByte)
 	if valueStr == "" {
