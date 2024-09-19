@@ -44,7 +44,7 @@ func (c *GoCache) GetValues() []*value_wrapper.ValueWrapper {
 }
 
 func (c *GoCache) GetKeys() []string {
-	var keys []string
+	keys := []string{}
 	for key := range c.cache.Items() {
 		keys = append(keys, key)
 	}
