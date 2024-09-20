@@ -51,7 +51,6 @@ func (e *EtcdRegister) KeepAlive() error {
 			select {
 			case _, ok := <-keepAliveChan:
 				if !ok {
-					log.Println("keepAliveChan is closed")
 					return
 				}
 			case <-context.Background().Done():
