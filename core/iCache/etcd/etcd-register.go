@@ -28,13 +28,12 @@ func (e *EtcdRegister) CreateLease(expire int64) error {
 
 // BindLease 绑定租约。将租约与对应的key-value绑定
 func (e *EtcdRegister) BindLease(key string, value string) error {
-
-	res, err := e.etcdCli.Put(context.Background(), key, value, clientv3.WithLease(e.leaseId))
+	_, err := e.etcdCli.Put(context.Background(), key, value, clientv3.WithLease(e.leaseId))
 	if err != nil {
 		log.Println(err.Error())
 		return err
 	}
-	log.Printf("bind lease success %v \n", res)
+	log.Printf("Service register successful!")
 	return nil
 }
 
@@ -67,14 +66,18 @@ func (e *EtcdRegister) KeepAlive() error {
 
 // Close 关闭服务
 func (e *EtcdRegister) Close() error {
-	log.Printf("close...\n")
-	// 撤销租约
 	_, err := e.etcdCli.Revoke(context.Background(), e.leaseId)
 	if err != nil {
 		log.Println(err.Error())
 		return err
 	}
-	return e.etcdCli.Close()
+	err = e.etcdCli.Close()
+	if err != nil {
+		log.Println(err.Error())
+		return err
+	}
+	log.Printf("Service close successfuly")
+	return nil
 }
 
 // NewEtcdRegister 初始化etcd服务注册对象
