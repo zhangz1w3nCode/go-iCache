@@ -50,8 +50,15 @@ func (e *EtcdRegister) KeepAlive() error {
 	go func(keepAliveChan <-chan *clientv3.LeaseKeepAliveResponse) {
 		for {
 			select {
-			case resp := <-keepAliveChan:
+			case resp, ok := <-keepAliveChan:
+				if !ok {
+					log.Println("keepAliveChan is closed")
+					return
+				}
 				log.Printf("续约成功...leaseID=%d", resp.ID)
+			case <-context.Background().Done():
+				log.Println("KeepAlive goroutine is stopping")
+				return
 			}
 		}
 	}(keepAliveChan)
