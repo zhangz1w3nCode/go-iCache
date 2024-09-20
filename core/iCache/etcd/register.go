@@ -60,10 +60,14 @@ func (e *EtcdRegister) KeepAlive() error {
 }
 
 // Close 关闭服务
-func (e *EtcdRegister) Close() error {
+func Close(e *EtcdRegister) error {
 	log.Printf("close...\n")
 	// 撤销租约
-	e.etcdCli.Revoke(context.Background(), e.leaseId)
+	_, err := e.etcdCli.Revoke(context.Background(), e.leaseId)
+	if err != nil {
+		log.Println(err.Error())
+		return err
+	}
 	return e.etcdCli.Close()
 }
 
