@@ -44,6 +44,8 @@ func (e *EtcdDiscovery) ServiceDiscovery(prefix string, autoDiscovery bool) erro
 		return err
 	}
 
+	//清空一次再放
+	e.serviceMap = make(map[string]string)
 	// 遍历key-value存储到本地map
 	for _, kv := range resp.Kvs {
 		e.putService(string(kv.Key), string(kv.Value))
