@@ -20,7 +20,7 @@ type EtcdHotUpdate struct {
 }
 
 func InitConfigHotUpdate(endpoint string, watchPathPrefix string, rootNode string) error {
-	configHotUpdate, err := newConfigHotUpdate(endpoint, watchPathPrefix)
+	configHotUpdate, err := NewConfigHotUpdate(endpoint, watchPathPrefix)
 	if err != nil {
 		log.Fatalf("Init etcd hot update error:%v", err)
 	}
@@ -31,7 +31,7 @@ func InitConfigHotUpdate(endpoint string, watchPathPrefix string, rootNode strin
 	return nil
 }
 
-func newConfigHotUpdate(endpoint string, watchPathPrefix string) (*EtcdHotUpdate, error) {
+func NewConfigHotUpdate(endpoint string, watchPathPrefix string) (*EtcdHotUpdate, error) {
 	//客户端连接etcd
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{endpoint},
