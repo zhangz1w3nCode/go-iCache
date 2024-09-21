@@ -43,30 +43,37 @@ func (e *EtcdDiscovery) ServiceDiscovery(prefix string, autoDiscovery bool) erro
 	if err != nil {
 		return err
 	}
-	//清空一次再放
-	e.serviceMap = make(map[string]string)
-	// 遍历key-value存储到本地map
+
+	//自动嗅探: 更新的是当前这次连接的map的值
+	if !autoDiscovery {
+		//清空一次再放
+		e.serviceMap = make(map[string]string)
+		// 遍历key-value存储到本地map
+		for _, kv := range resp.Kvs {
+			e.putService(string(kv.Key), string(kv.Value))
+		}
+		return nil
+	}
+
 	for _, kv := range resp.Kvs {
 		e.putService(string(kv.Key), string(kv.Value))
 	}
-	//自动嗅探: 更新的是当前这次连接的map的值
-	if autoDiscovery {
-		// 开启监听协程，监听prefix的变化
-		go func() {
-			watchRespChan := e.cli.Watch(e.Ctx, prefix, clientv3.WithPrefix())
-			log.Printf("watching prefix:%s now...", prefix)
-			for watchResp := range watchRespChan {
-				for _, event := range watchResp.Events {
-					switch event.Type {
-					case mvccpb.PUT: // 发生了修改或者新增
-						e.putService(string(event.Kv.Key), string(event.Kv.Value)) // ServiceMap中进行相应的修改或新增
-					case mvccpb.DELETE: //发生了删除
-						e.delService(string(event.Kv.Key)) // ServiceMap中进行相应的删除
-					}
+
+	// 开启监听协程，监听prefix的变化
+	go func() {
+		watchRespChan := e.cli.Watch(e.Ctx, prefix, clientv3.WithPrefix())
+		log.Printf("watching prefix:%s now...", prefix)
+		for watchResp := range watchRespChan {
+			for _, event := range watchResp.Events {
+				switch event.Type {
+				case mvccpb.PUT:
+					e.putService(string(event.Kv.Key), string(event.Kv.Value)) // ServiceMap中进行相应的修改或新增
+				case mvccpb.DELETE:
+					e.delService(string(event.Kv.Key)) // ServiceMap中进行相应的删除
 				}
 			}
-		}()
-	}
+		}
+	}()
 
 	return nil
 }
