@@ -12,7 +12,6 @@ import (
 )
 
 func RegisterCacheGrpcService(s *grpc.Server, serviceName, bizAppIp string, etcdAddress string, managerCache *manager.CacheManager) *etcd.EtcdRegister {
-	//读取配置文件地址设置
 	config.Init("./config/config.yaml")
 
 	monitorService := monitorsvc.NewMonitorService(managerCache)

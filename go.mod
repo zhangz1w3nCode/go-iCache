@@ -5,7 +5,6 @@ go 1.23.0
 require (
 	github.com/dgraph-io/ristretto v0.1.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
-	github.com/samuel/go-zookeeper v0.0.0-20201211165307-7117e9ea2414
 	go.etcd.io/etcd/client/v3 v3.5.16
 	google.golang.org/grpc v1.66.2
 	google.golang.org/protobuf v1.34.2

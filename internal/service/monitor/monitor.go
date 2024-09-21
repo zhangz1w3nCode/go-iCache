@@ -18,26 +18,6 @@ func NewMonitorService(manager *manager.CacheManager) *MonitorService {
 	}
 }
 
-func (m *MonitorService) GetCacheUserAddressList(ctx context.Context, req *monitorpb.GetCacheUserAddressListRequest) (*monitorpb.GetCacheUserAddressListResponse, error) {
-
-	addressList, err := m.monitorLogic.GetCacheUserAddressList(ctx, req.GetAppName())
-
-	if err != nil {
-		return &monitorpb.GetCacheUserAddressListResponse{UserCacheAddressList: []string{}}, nil
-	}
-
-	return &monitorpb.GetCacheUserAddressListResponse{UserCacheAddressList: addressList}, nil
-}
-func (m *MonitorService) GetCacheUserAppNameList(ctx context.Context, req *monitorpb.GetCacheUserAppNameListRequest) (*monitorpb.GetCacheUserAppNameListResponse, error) {
-
-	AppNameList, err := m.monitorLogic.GetCacheUserAppNameList(ctx)
-
-	if err != nil {
-		return &monitorpb.GetCacheUserAppNameListResponse{UserCacheAppNameList: []string{}}, nil
-	}
-
-	return &monitorpb.GetCacheUserAppNameListResponse{UserCacheAppNameList: AppNameList}, nil
-}
 func (m *MonitorService) GetCacheNameList(ctx context.Context, req *monitorpb.GetCacheNameListRequest) (*monitorpb.GetCacheNameListResponse, error) {
 	cacheNameList, err := m.monitorLogic.GetCacheNameList()
 
