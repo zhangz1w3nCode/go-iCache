@@ -1,7 +1,6 @@
 package cacheRegister
 
 import (
-	"encoding/json"
 	"github.com/zhangz1w3nCode/go-iCache/config"
 	"github.com/zhangz1w3nCode/go-iCache/core/etcd"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/manager"
@@ -17,14 +16,11 @@ func RegisterCacheGrpcService(s *grpc.Server, serviceName, bizAppIp string, etcd
 	monitorService := monitorsvc.NewMonitorService(managerCache)
 	monitorpb.RegisterCacheMonitorServiceServer(s, monitorService)
 
-	info := s.GetServiceInfo()
-	jsonStr, err := json.Marshal(info)
-
 	etcdRegister, err := etcd.NewEtcdRegister(etcdAddress)
 	if err != nil {
 		log.Fatalf("failed to get etcd connect: %v", err)
 	}
-	err = etcdRegister.ServiceRegister("/services/"+serviceName+"/"+bizAppIp, string(jsonStr), 60)
+	err = etcdRegister.ServiceRegister("/services/"+serviceName+"/"+bizAppIp, bizAppIp, 60)
 	if err != nil {
 		log.Fatalf("failed to register etcd: %v", err)
 	}
