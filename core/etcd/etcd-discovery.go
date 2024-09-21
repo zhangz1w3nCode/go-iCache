@@ -15,6 +15,7 @@ type EtcdDiscovery struct {
 	cli        *clientv3.Client  // etcd连接
 	serviceMap map[string]string // 服务列表(k-v列表)
 	lock       sync.RWMutex      // 读写互斥锁
+	ctx        context.Context
 }
 
 func NewServiceDiscovery(endpoints []string) (*EtcdDiscovery, error) {
@@ -31,13 +32,14 @@ func NewServiceDiscovery(endpoints []string) (*EtcdDiscovery, error) {
 	return &EtcdDiscovery{
 		cli:        cli,
 		serviceMap: make(map[string]string), // 初始化kvMap
+		ctx:        nil,
 	}, nil
 }
 
 // ServiceDiscovery 读取etcd的服务并开启协程监听kv变化
 func (e *EtcdDiscovery) ServiceDiscovery(prefix string) error {
 	// 根据服务名称的前缀，获取所有的注册服务
-	resp, err := e.cli.Get(context.Background(), prefix, clientv3.WithPrefix())
+	resp, err := e.cli.Get(e.ctx, prefix, clientv3.WithPrefix())
 	if err != nil {
 		return err
 	}
@@ -49,7 +51,7 @@ func (e *EtcdDiscovery) ServiceDiscovery(prefix string) error {
 
 	// 开启监听协程，监听prefix的变化
 	go func() {
-		watchRespChan := e.cli.Watch(context.Background(), prefix, clientv3.WithPrefix())
+		watchRespChan := e.cli.Watch(e.ctx, prefix, clientv3.WithPrefix())
 		log.Printf("watching prefix:%s now...", prefix)
 		for watchResp := range watchRespChan {
 			for _, event := range watchResp.Events {
