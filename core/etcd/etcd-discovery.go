@@ -37,7 +37,7 @@ func NewServiceDiscovery(endpoints []string) (*EtcdDiscovery, error) {
 }
 
 // ServiceDiscovery 读取etcd的服务并开启协程监听kv变化
-func (e *EtcdDiscovery) ServiceDiscovery(prefix string) error {
+func (e *EtcdDiscovery) ServiceDiscovery(prefix string, autoDiscovery bool) error {
 	// 根据服务名称的前缀，获取所有的注册服务
 	resp, err := e.cli.Get(e.Ctx, prefix, clientv3.WithPrefix())
 	if err != nil {
@@ -49,21 +49,24 @@ func (e *EtcdDiscovery) ServiceDiscovery(prefix string) error {
 		e.putService(string(kv.Key), string(kv.Value))
 	}
 
-	// 开启监听协程，监听prefix的变化
-	go func() {
-		watchRespChan := e.cli.Watch(e.Ctx, prefix, clientv3.WithPrefix())
-		log.Printf("watching prefix:%s now...", prefix)
-		for watchResp := range watchRespChan {
-			for _, event := range watchResp.Events {
-				switch event.Type {
-				case mvccpb.PUT: // 发生了修改或者新增
-					e.putService(string(event.Kv.Key), string(event.Kv.Value)) // ServiceMap中进行相应的修改或新增
-				case mvccpb.DELETE: //发生了删除
-					e.delService(string(event.Kv.Key)) // ServiceMap中进行相应的删除
+	//自动嗅探
+	if autoDiscovery {
+		// 开启监听协程，监听prefix的变化
+		go func() {
+			watchRespChan := e.cli.Watch(e.Ctx, prefix, clientv3.WithPrefix())
+			log.Printf("watching prefix:%s now...", prefix)
+			for watchResp := range watchRespChan {
+				for _, event := range watchResp.Events {
+					switch event.Type {
+					case mvccpb.PUT: // 发生了修改或者新增
+						e.putService(string(event.Kv.Key), string(event.Kv.Value)) // ServiceMap中进行相应的修改或新增
+					case mvccpb.DELETE: //发生了删除
+						e.delService(string(event.Kv.Key)) // ServiceMap中进行相应的删除
+					}
 				}
 			}
-		}
-	}()
+		}()
+	}
 
 	return nil
 }
