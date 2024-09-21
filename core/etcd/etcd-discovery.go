@@ -82,7 +82,7 @@ func (s *EtcdDiscovery) delService(key string) {
 	log.Println("del key:", key)
 }
 
-// GetService 获取本地服务
+// GetService 获取本地服务的value
 func (s *EtcdDiscovery) GetService(serviceName string) (string, error) {
 	s.lock.RLock()
 	serviceAddr, ok := s.serviceMap[serviceName]
@@ -91,6 +91,17 @@ func (s *EtcdDiscovery) GetService(serviceName string) (string, error) {
 		return "", fmt.Errorf("can not get serviceAddr")
 	}
 	return serviceAddr, nil
+}
+
+// GetServiceMap 获取本地服务的
+func (s *EtcdDiscovery) GetServiceMap() (map[string]string, error) {
+	s.lock.RLock()
+	serviceMap := s.serviceMap
+	s.lock.RUnlock()
+	if serviceMap == nil {
+		return map[string]string{}, nil
+	}
+	return serviceMap, nil
 }
 
 // Close 关闭服务
