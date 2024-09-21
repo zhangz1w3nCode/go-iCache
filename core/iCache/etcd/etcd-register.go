@@ -75,7 +75,7 @@ func (e *EtcdRegister) Close() error {
 		log.Println(err.Error())
 		return err
 	}
-	log.Printf("Service close successfuly!g")
+	log.Printf("Service close successfuly!")
 	return nil
 }
 
