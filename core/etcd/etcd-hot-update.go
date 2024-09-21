@@ -19,10 +19,22 @@ type EtcdHotUpdate struct {
 	Ctx  context.Context
 }
 
-func NewConfigHotUpdate(endpoints []string, watchPathPrefix string) (*EtcdHotUpdate, error) {
+func InitConfigHotUpdate(endpoint string, watchPathPrefix string, rootNode string) error {
+	configHotUpdate, err := newConfigHotUpdate(endpoint, watchPathPrefix)
+	if err != nil {
+		log.Fatalf("Init etcd hot update error:%v", err)
+	}
+	err = configHotUpdate.ConfigDiscovery(endpoint, rootNode)
+	if err != nil {
+		log.Fatalf("Watch etcd hot update error:%v", err)
+	}
+	return nil
+}
+
+func newConfigHotUpdate(endpoint string, watchPathPrefix string) (*EtcdHotUpdate, error) {
 	//客户端连接etcd
 	cli, err := clientv3.New(clientv3.Config{
-		Endpoints:   endpoints,
+		Endpoints:   []string{endpoint},
 		DialTimeout: 5 * time.Second,
 	})
 	if err != nil {
@@ -30,7 +42,7 @@ func NewConfigHotUpdate(endpoints []string, watchPathPrefix string) (*EtcdHotUpd
 	}
 
 	//viper连接etcd
-	if err := viper.AddRemoteProvider("etcd3", endpoints[0], watchPathPrefix); err != nil {
+	if err := viper.AddRemoteProvider("etcd3", endpoint, watchPathPrefix); err != nil {
 		log.Fatalf("Get etcd remote config error:%v", err)
 	}
 	viper.SetConfigType("yaml") //设置配置文件格式
