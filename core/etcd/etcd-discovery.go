@@ -94,14 +94,14 @@ func (s *EtcdDiscovery) GetService(serviceName string) (string, error) {
 }
 
 // GetServiceMap 获取本地服务的
-func (s *EtcdDiscovery) GetServiceMap() (map[string]string, error) {
+func (s *EtcdDiscovery) GetServiceMap() map[string]string {
 	s.lock.RLock()
 	serviceMap := s.serviceMap
 	s.lock.RUnlock()
 	if serviceMap == nil {
-		return map[string]string{}, nil
+		return map[string]string{}
 	}
-	return serviceMap, nil
+	return serviceMap
 }
 
 // Close 关闭服务
