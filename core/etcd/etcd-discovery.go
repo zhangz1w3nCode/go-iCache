@@ -49,7 +49,7 @@ func (e *EtcdDiscovery) ServiceDiscovery(prefix string, autoDiscovery bool) erro
 		e.putService(string(kv.Key), string(kv.Value))
 	}
 
-	//自动嗅探
+	//自动嗅探: 更新的是当前这次连接的map的值
 	if autoDiscovery {
 		// 开启监听协程，监听prefix的变化
 		go func() {
