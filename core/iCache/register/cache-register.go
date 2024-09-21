@@ -3,7 +3,7 @@ package cacheRegister
 import (
 	"encoding/json"
 	"github.com/zhangz1w3nCode/go-iCache/config"
-	"github.com/zhangz1w3nCode/go-iCache/core/iCache/etcd"
+	"github.com/zhangz1w3nCode/go-iCache/core/etcd"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/manager"
 	monitorsvc "github.com/zhangz1w3nCode/go-iCache/internal/service/monitor"
 	monitorpb "github.com/zhangz1w3nCode/go-iCache/pb/generate/cache-monitor"
