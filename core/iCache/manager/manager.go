@@ -49,3 +49,6 @@ func (m *CacheManager) GetAllCacheName() []string {
 	}
 	return cacheNameList
 }
+func (m *CacheManager) GetCacheDetail() map[string]iCache.ICache {
+	return m.cacheMap
+}
