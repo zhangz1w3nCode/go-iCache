@@ -2,7 +2,7 @@ package cacheRegister
 
 import (
 	"github.com/zhangz1w3nCode/go-iCache/core/etcd"
-	cacheInit "github.com/zhangz1w3nCode/go-iCache/core/iCache/start"
+	cacheInit "github.com/zhangz1w3nCode/go-iCache/core/iCache/init"
 	monitorsvc "github.com/zhangz1w3nCode/go-iCache/internal/service/monitor"
 	monitorpb "github.com/zhangz1w3nCode/go-iCache/pb/generate/cache-monitor"
 	"google.golang.org/grpc"
