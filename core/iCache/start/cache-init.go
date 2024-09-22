@@ -1,4 +1,4 @@
-package start
+package cacheInit
 
 import (
 	"github.com/spf13/viper"
@@ -9,19 +9,22 @@ import (
 )
 
 type CacheInit struct {
-	CacheManager *manager.CacheManager
-	db           *gorm.DB
+	CacheManager   *manager.CacheManager
+	GormConnection *gorm.DB
 }
 
 func NewCacheInit() *CacheInit {
-	db, err := gorm.Open(mysql.Open(viper.GetString("config.database.data_source_name")), &gorm.Config{
+	//初始化数据库连接
+	gormConnection, err := gorm.Open(mysql.Open(viper.GetString("config.database.data_source_name")), &gorm.Config{
 		SkipDefaultTransaction: viper.GetBool("config.database.gorm_cfg.skip_default_transaction"),
 	})
 	if err != nil {
 		log.Fatalf("Init database error:%v", err)
 	}
+	//初始化cacheManager
+	cacheManager := manager.NewCacheManager()
 	return &CacheInit{
-		CacheManager: manager.NewCacheManager(),
-		db:           db,
+		CacheManager:   cacheManager,
+		GormConnection: gormConnection,
 	}
 }

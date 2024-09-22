@@ -2,15 +2,15 @@ package cacheRegister
 
 import (
 	"github.com/zhangz1w3nCode/go-iCache/core/etcd"
-	"github.com/zhangz1w3nCode/go-iCache/core/iCache/manager"
+	cacheInit "github.com/zhangz1w3nCode/go-iCache/core/iCache/start"
 	monitorsvc "github.com/zhangz1w3nCode/go-iCache/internal/service/monitor"
 	monitorpb "github.com/zhangz1w3nCode/go-iCache/pb/generate/cache-monitor"
 	"google.golang.org/grpc"
 	"log"
 )
 
-func RegisterCacheGrpcService(s *grpc.Server, serviceName, bizAppIp string, etcdAddress string, managerCache *manager.CacheManager) *etcd.EtcdRegister {
-	monitorService := monitorsvc.NewMonitorService(managerCache)
+func RegisterCacheGrpcService(s *grpc.Server, serviceName, bizAppIp string, etcdAddress string, cacheInit *cacheInit.CacheInit) *etcd.EtcdRegister {
+	monitorService := monitorsvc.NewMonitorService(cacheInit.CacheManager)
 	monitorpb.RegisterCacheMonitorServiceServer(s, monitorService)
 	etcdRegister, err := etcd.NewEtcdRegister(etcdAddress)
 	if err != nil {
