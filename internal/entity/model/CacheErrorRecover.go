@@ -28,7 +28,6 @@ func (c *CacheErrorRecover) ToPB() {
 
 }
 
-// TableName sets the insert table name for this struct type
 func (c *CacheErrorRecover) TableName() string {
 	return "cache_error_recover"
 }
