@@ -19,7 +19,7 @@ type EtcdHotUpdate struct {
 	Ctx  context.Context
 }
 
-func InitConfigHotUpdate(endpoint string, watchPathPrefix string, rootNode string) error {
+func InitConfigHotUpdate(endpoint string, watchPathPrefix string, rootNode string) {
 	configHotUpdate, err := NewConfigHotUpdate(endpoint, watchPathPrefix)
 	if err != nil {
 		log.Fatalf("Init etcd hot update error:%v", err)
@@ -28,7 +28,6 @@ func InitConfigHotUpdate(endpoint string, watchPathPrefix string, rootNode strin
 	if err != nil {
 		log.Fatalf("Watch etcd hot update error:%v", err)
 	}
-	return nil
 }
 
 func NewConfigHotUpdate(endpoint string, watchPathPrefix string) (*EtcdHotUpdate, error) {
