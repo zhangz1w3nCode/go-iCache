@@ -24,7 +24,7 @@ func InitConfigHotUpdate(endpoint string, watchPathPrefix string, rootNode strin
 	if err != nil {
 		log.Fatalf("Init etcd hot update error:%v", err)
 	}
-	err = configHotUpdate.ConfigDiscovery(endpoint, rootNode)
+	err = configHotUpdate.ConfigDiscovery(watchPathPrefix, rootNode)
 	if err != nil {
 		log.Fatalf("Watch etcd hot update error:%v", err)
 	}
