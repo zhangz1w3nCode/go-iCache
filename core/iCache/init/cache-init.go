@@ -6,6 +6,7 @@ import (
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"log"
+	"time"
 )
 
 type CacheInit struct {
@@ -21,6 +22,11 @@ func NewCacheInit() *CacheInit {
 	if err != nil {
 		log.Fatalf("Init database error:%v", err)
 	}
+	sqlDB, _ := gormConnection.DB()
+	sqlDB.SetMaxIdleConns(viper.GetInt("config.database.connection_max_idle_connections")) // 设置空闲连接池中的最大连接数
+	sqlDB.SetMaxOpenConns(viper.GetInt("config.database.max_open_connections"))
+	sqlDB.SetConnMaxLifetime(time.Duration(viper.GetInt("config.database.connection_max_lifetime")) * time.Millisecond) // 设置打开数据库连接的最大数量 // 设置连接可复用的最大时
+
 	//初始化cacheManager
 	cacheManager := manager.NewCacheManager()
 	return &CacheInit{
