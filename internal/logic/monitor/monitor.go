@@ -2,7 +2,7 @@ package test
 
 import (
 	"encoding/json"
-	"github.com/zhangz1w3nCode/go-iCache/core/iCache/manager"
+	cacheManager "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache-manager"
 	monitorpb "github.com/zhangz1w3nCode/go-iCache/pb/generate/cache-monitor"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -10,10 +10,10 @@ import (
 
 type MonitorLogic struct {
 	monitor monitorpb.UnimplementedCacheMonitorServiceServer
-	manager *manager.CacheManager
+	manager *cacheManager.CacheManager
 }
 
-func NewMonitorService(manager *manager.CacheManager) *MonitorLogic {
+func NewMonitorService(manager *cacheManager.CacheManager) *MonitorLogic {
 	return &MonitorLogic{
 		manager: manager,
 	}
@@ -32,7 +32,7 @@ func (m *MonitorLogic) GetCacheNameList() ([]string, error) {
 func (m *MonitorLogic) GetCacheKeyList(cacheName string) ([]string, error) {
 	cache := m.manager.GetCache(cacheName)
 	if cache == nil {
-		return nil, status.Errorf(codes.Unavailable, "Get cache "+cacheName+" from cache manager error!")
+		return nil, status.Errorf(codes.Unavailable, "Get cache "+cacheName+" from cache cache-manager error!")
 	}
 	keyList := cache.GetKeys()
 	if keyList == nil || len(keyList) == 0 {
@@ -45,7 +45,7 @@ func (m *MonitorLogic) GetCacheKeyList(cacheName string) ([]string, error) {
 func (m *MonitorLogic) GetValueToCacheUser(cacheName string, cacheKey string) (string, error) {
 	cache := m.manager.GetCache(cacheName)
 	if cache == nil {
-		return "", status.Errorf(codes.Unavailable, "Get cache "+cacheName+" from cache manager error!")
+		return "", status.Errorf(codes.Unavailable, "Get cache "+cacheName+" from cache cache-manager error!")
 	}
 	valueWrapper := cache.Get(cacheKey)
 	if valueWrapper == nil {

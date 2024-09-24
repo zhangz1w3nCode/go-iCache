@@ -1,7 +1,7 @@
-package iCache
+package cache
 
 import (
-	"github.com/zhangz1w3nCode/go-iCache/core/iCache/value-wrapper"
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache/cache/value-wrapper"
 )
 
 // ICache 真正缓存的接口

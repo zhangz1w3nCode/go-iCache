@@ -18,7 +18,7 @@ func RegisterCacheGrpcService(s *grpc.Server, serviceName, bizAppIp string, etcd
 	}
 	err = etcdRegister.ServiceRegister("/services/"+serviceName+"/"+bizAppIp, bizAppIp, 60)
 	if err != nil {
-		log.Fatalf("failed to register etcd: %v", err)
+		log.Fatalf("failed to cache-register etcd: %v", err)
 	}
 	return etcdRegister
 }

@@ -33,7 +33,7 @@ func (e *EtcdRegister) BindLease(key string, value string) error {
 		log.Println(err.Error())
 		return err
 	}
-	log.Printf("Service register successful!")
+	log.Printf("Service cache-register successful!")
 	return nil
 }
 

@@ -1,8 +1,8 @@
-package map_cache
+package mapCache
 
 import (
-	"github.com/zhangz1w3nCode/go-iCache/core/iCache"
-	"github.com/zhangz1w3nCode/go-iCache/core/iCache/value-wrapper"
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache/cache"
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache/cache/value-wrapper"
 	"sync"
 )
 
@@ -72,7 +72,7 @@ func (c *SimpleCache) CalculateMemoryUsage() float64 {
 	return float64(c.Size())
 }
 
-func (c *SimpleCache) GetCacheStatus() iCache.CacheStats {
+func (c *SimpleCache) GetCacheStatus() cache.CacheStats {
 	// 简化版本，不提供真实缓存状态
-	return iCache.CacheStats{}
+	return cache.CacheStats{}
 }

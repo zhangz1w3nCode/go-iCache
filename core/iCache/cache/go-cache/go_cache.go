@@ -2,12 +2,10 @@ package go_cache
 
 import (
 	"github.com/patrickmn/go-cache"
-	"github.com/zhangz1w3nCode/go-iCache/core/iCache"
-	"github.com/zhangz1w3nCode/go-iCache/core/iCache/config"
-	"github.com/zhangz1w3nCode/go-iCache/core/iCache/value-wrapper"
+	cache2 "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache"
+	cacheConfig "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache-config"
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache/cache/value-wrapper"
 	"log"
-	"strconv"
-	"unsafe"
 )
 
 // GoCache go-cache缓存
@@ -17,7 +15,7 @@ type GoCache struct {
 }
 
 // NewGoCache 创建一个新的GoCache实例
-func NewGoCache(cacheConfig *config.GoCacheConfig) *GoCache {
+func NewGoCache(cacheConfig *cacheConfig.GoCacheConfig) *GoCache {
 	return &GoCache{
 		name:  cacheConfig.CacheName,
 		cache: cache.New(cacheConfig.ExpireTime, cacheConfig.CleanTime),
@@ -31,8 +29,6 @@ func (c *GoCache) Set(key string, value interface{}) {
 func (c *GoCache) Get(key string) *value_wrapper.ValueWrapper {
 	if item, found := c.cache.Get(key); found {
 		vw := item.(*value_wrapper.ValueWrapper)
-		str := int64(unsafe.Sizeof(vw.Data))
-		log.Printf(strconv.FormatInt(str, 10))
 		vw.UpdateCacheStatus()
 		vw.UpdateAccessTime()
 		vw.UpdateWriteTime()
@@ -73,7 +69,7 @@ func (c *GoCache) CalculateMemoryUsage() float64 {
 	return float64(c.Size())
 }
 
-func (c *GoCache) GetCacheStatus() iCache.CacheStats {
+func (c *GoCache) GetCacheStatus() cache2.CacheStats {
 	// This is a simplified version and does not provide real cache statistics
-	return iCache.CacheStats{}
+	return cache2.CacheStats{}
 }

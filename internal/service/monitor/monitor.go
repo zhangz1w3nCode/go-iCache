@@ -2,7 +2,7 @@ package monitor
 
 import (
 	"context"
-	"github.com/zhangz1w3nCode/go-iCache/core/iCache/manager"
+	cacheManager "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache-manager"
 	monitorlogic "github.com/zhangz1w3nCode/go-iCache/internal/logic/monitor"
 	monitorpb "github.com/zhangz1w3nCode/go-iCache/pb/generate/cache-monitor"
 )
@@ -12,7 +12,7 @@ type MonitorService struct {
 	monitorLogic *monitorlogic.MonitorLogic
 }
 
-func NewMonitorService(manager *manager.CacheManager) *MonitorService {
+func NewMonitorService(manager *cacheManager.CacheManager) *MonitorService {
 	return &MonitorService{
 		monitorLogic: monitorlogic.NewMonitorService(manager),
 	}

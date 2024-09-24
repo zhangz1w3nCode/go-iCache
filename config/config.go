@@ -57,7 +57,7 @@ func Init(configFilePath string) {
 		configData, err := os.ReadFile(configFilePath)
 		if err != nil {
 			pwd, _ := os.Getwd()
-			log.Fatalf("load config file error %v, pwd: %s.", err, pwd)
+			log.Fatalf("load cache-config file error %v, pwd: %s.", err, pwd)
 		}
 		config = &Config{}
 
@@ -65,7 +65,7 @@ func Init(configFilePath string) {
 
 		config = &Config{}
 		if err = yaml.Unmarshal([]byte(injectedConfigData), config); err != nil {
-			log.Fatalf("unmarshal config file error %v.", err)
+			log.Fatalf("unmarshal cache-config file error %v.", err)
 		}
 	})
 }

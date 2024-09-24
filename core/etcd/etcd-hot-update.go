@@ -42,11 +42,11 @@ func NewConfigHotUpdate(endpoint string, watchPathPrefix string) (*EtcdHotUpdate
 
 	//viper连接etcd
 	if err := viper.AddRemoteProvider("etcd3", endpoint, watchPathPrefix); err != nil {
-		log.Fatalf("Get etcd remote config error:%v", err)
+		log.Fatalf("Get etcd remote cache-config error:%v", err)
 	}
 	viper.SetConfigType("yaml") //设置配置文件格式
 	if err := viper.ReadRemoteConfig(); err != nil {
-		log.Fatalf("Read etcd remote config error:%v", err)
+		log.Fatalf("Read etcd remote cache-config error:%v", err)
 	}
 
 	return &EtcdHotUpdate{

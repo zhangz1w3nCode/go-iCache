@@ -2,9 +2,9 @@ package ristretto_cache
 
 import (
 	cache "github.com/dgraph-io/ristretto"
-	"github.com/zhangz1w3nCode/go-iCache/core/iCache"
-	"github.com/zhangz1w3nCode/go-iCache/core/iCache/config"
-	"github.com/zhangz1w3nCode/go-iCache/core/iCache/value-wrapper"
+	cache2 "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache"
+	cacheConfig "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache-config"
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache/cache/value-wrapper"
 )
 
 // RistrettoCache RistrettoCache缓存
@@ -14,7 +14,7 @@ type RistrettoCache struct {
 }
 
 // NewRistrettoCache 创建一个新的RistrettoCache实例
-func NewRistrettoCache(cacheConfig *config.RistrettoCacheConfig) *RistrettoCache {
+func NewRistrettoCache(cacheConfig *cacheConfig.RistrettoCacheConfig) *RistrettoCache {
 
 	cache, err := cache.NewCache(&cache.Config{
 		NumCounters: cacheConfig.NumCounters, // 100万计数器
@@ -69,7 +69,7 @@ func (c *RistrettoCache) CalculateMemoryUsage() float64 {
 	return float64(c.Size())
 }
 
-func (c *RistrettoCache) GetCacheStatus() iCache.CacheStats {
+func (c *RistrettoCache) GetCacheStatus() cache2.CacheStats {
 	costAdd := c.cache.Metrics.CostAdded()
 	costEvicted := c.cache.Metrics.CostEvicted()
 	kept := c.cache.Metrics.GetsKept()
@@ -83,7 +83,7 @@ func (c *RistrettoCache) GetCacheStatus() iCache.CacheStats {
 	setsDropped := c.cache.Metrics.SetsDropped()
 	ratio := c.cache.Metrics.Ratio()
 
-	return iCache.CacheStats{
+	return cache2.CacheStats{
 		HitCount:    int64(hits),
 		MissCount:   int64(misses),
 		KeysAdded:   int64(keyAdd),
