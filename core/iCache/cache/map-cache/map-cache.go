@@ -8,7 +8,7 @@ import (
 
 // SimpleCache 简单的缓存实现
 type SimpleCache struct {
-	cache map[string]*value_wrapper.ValueWrapper
+	cache map[string]*valueWrapper.ValueWrapper
 	lock  sync.RWMutex
 	name  string
 }
@@ -16,12 +16,12 @@ type SimpleCache struct {
 // NewSimpleCache 创建一个新的SimpleCache实例
 func NewSimpleCache(name string) *SimpleCache {
 	return &SimpleCache{
-		cache: make(map[string]*value_wrapper.ValueWrapper),
+		cache: make(map[string]*valueWrapper.ValueWrapper),
 		name:  name,
 	}
 }
 
-func (c *SimpleCache) Get(key string) *value_wrapper.ValueWrapper {
+func (c *SimpleCache) Get(key string) *valueWrapper.ValueWrapper {
 	c.lock.RLock()
 	defer c.lock.RUnlock()
 	vw, exists := c.cache[key]
@@ -34,13 +34,13 @@ func (c *SimpleCache) Get(key string) *value_wrapper.ValueWrapper {
 func (c *SimpleCache) Put(key string, value interface{}) {
 	c.lock.Lock()
 	defer c.lock.Unlock()
-	c.cache[key] = value_wrapper.NewValueWrapper(value)
+	c.cache[key] = valueWrapper.NewValueWrapper(value)
 }
 
-func (c *SimpleCache) GetValues() []*value_wrapper.ValueWrapper {
+func (c *SimpleCache) GetValues() []*valueWrapper.ValueWrapper {
 	c.lock.RLock()
 	defer c.lock.RUnlock()
-	var values []*value_wrapper.ValueWrapper
+	var values []*valueWrapper.ValueWrapper
 	for _, vw := range c.cache {
 		values = append(values, vw)
 	}

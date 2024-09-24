@@ -1,4 +1,4 @@
-package ristretto_cache
+package ristrettoCache
 
 import (
 	cache "github.com/dgraph-io/ristretto"
@@ -34,12 +34,12 @@ func NewRistrettoCache(cacheConfig *cacheConfig.RistrettoCacheConfig) *Ristretto
 }
 
 func (c *RistrettoCache) Set(key string, value interface{}) {
-	c.cache.Set(key, value_wrapper.NewValueWrapper(value), 1)
+	c.cache.Set(key, valueWrapper.NewValueWrapper(value), 1)
 }
 
-func (c *RistrettoCache) Get(key string) *value_wrapper.ValueWrapper {
+func (c *RistrettoCache) Get(key string) *valueWrapper.ValueWrapper {
 	if item, found := c.cache.Get(key); found {
-		vw := item.(*value_wrapper.ValueWrapper)
+		vw := item.(*valueWrapper.ValueWrapper)
 		vw.UpdateAccessTime()
 		vw.UpdateWriteTime()
 		return vw
@@ -47,8 +47,8 @@ func (c *RistrettoCache) Get(key string) *value_wrapper.ValueWrapper {
 	return nil
 }
 
-func (c *RistrettoCache) GetValues() []*value_wrapper.ValueWrapper {
-	var values []*value_wrapper.ValueWrapper
+func (c *RistrettoCache) GetValues() []*valueWrapper.ValueWrapper {
+	var values []*valueWrapper.ValueWrapper
 	return values
 }
 

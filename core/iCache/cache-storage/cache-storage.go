@@ -3,8 +3,8 @@ package cacheStorage
 import (
 	"encoding/json"
 	cacheInit "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache-init"
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache/cache-model"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/cache/go-cache"
-	"github.com/zhangz1w3nCode/go-iCache/internal/entity/model"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
 	"log"
@@ -13,6 +13,13 @@ import (
 )
 
 var logger *zap.Logger
+
+const (
+	// BatchSize 批量插入的数量
+	BatchSize = 1000
+	// SemaphoreSize 并发数量
+	SemaphoreSize = 100
+)
 
 func CacheStorage(cacheInit *cacheInit.CacheInit, serviceName, serviceAddress string) {
 	//初始化日志 logger
@@ -27,15 +34,15 @@ func CacheStorage(cacheInit *cacheInit.CacheInit, serviceName, serviceAddress st
 	//2.从获取managerCache中该服务每个缓存的所有key和value信息
 	cacheDetail := cacheInit.CacheManager.GetCacheDetail()
 	//拿到所有的缓存
-	var cacheList []*model.CacheErrorRecover
+	var cacheList []*cacheModel.CacheErrorRecover
 	for cacheName := range cacheDetail {
-		cache := cacheDetail[cacheName].(*go_cache.GoCache)
+		cache := cacheDetail[cacheName].(*goCache.GoCache)
 		keys := cache.GetKeys()
 		for _, key := range keys {
 			wrapper := cache.Get(key)
 			value := wrapper.Data
 			valueStr, _ := json.Marshal(value)
-			cacheData := &model.CacheErrorRecover{
+			cacheData := &cacheModel.CacheErrorRecover{
 				CacheName:      cacheName,
 				CacheKey:       key,
 				CacheValue:     string(valueStr),
@@ -54,11 +61,9 @@ func CacheStorage(cacheInit *cacheInit.CacheInit, serviceName, serviceAddress st
 		}
 	}
 	//3.通过dbConn将数据存入MySQL
-	semaphoreSize := 10
-	batchSize := 5000
-	semaphore := make(chan struct{}, semaphoreSize)
+	semaphore := make(chan struct{}, SemaphoreSize)
 	waitGroup := sync.WaitGroup{}
-	storage(db, cacheList, batchSize, &waitGroup, semaphore)
+	storage(db, cacheList, BatchSize, &waitGroup, semaphore)
 	waitGroup.Wait()
 	//4.日志：将缓存的每个具体的缓存 批量快速的写入到数据库中持久化
 	logger.Info("End storage cache data to database!")
@@ -68,7 +73,7 @@ func CacheStorage(cacheInit *cacheInit.CacheInit, serviceName, serviceAddress st
 	logger.Info("Storage cache data to database cost time:", zap.Duration("elapsedTime", elapsedTime))
 }
 
-func storage(db *gorm.DB, cacheList []*model.CacheErrorRecover, batchSize int, waitGroup *sync.WaitGroup, semaphore chan struct{}) {
+func storage(db *gorm.DB, cacheList []*cacheModel.CacheErrorRecover, batchSize int, waitGroup *sync.WaitGroup, semaphore chan struct{}) {
 	for i := 0; i < len(cacheList); i += batchSize {
 		semaphore <- struct{}{}
 		waitGroup.Add(1)

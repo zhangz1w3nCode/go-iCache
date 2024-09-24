@@ -1,4 +1,4 @@
-package value_wrapper
+package valueWrapper
 
 import (
 	"time"

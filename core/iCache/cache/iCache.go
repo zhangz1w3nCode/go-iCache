@@ -6,9 +6,9 @@ import (
 
 // ICache 真正缓存的接口
 type ICache interface {
-	Get(key string) *value_wrapper.ValueWrapper
+	Get(key string) *valueWrapper.ValueWrapper
 	Set(key string, value interface{})
-	GetValues() []*value_wrapper.ValueWrapper
+	GetValues() []*valueWrapper.ValueWrapper
 	GetKeys() []string
 	Size() int
 	GetName() string

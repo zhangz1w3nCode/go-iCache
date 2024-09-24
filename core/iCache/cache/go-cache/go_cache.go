@@ -1,4 +1,4 @@
-package go_cache
+package goCache
 
 import (
 	"github.com/patrickmn/go-cache"
@@ -23,12 +23,12 @@ func NewGoCache(cacheConfig *cacheConfig.GoCacheConfig) *GoCache {
 }
 
 func (c *GoCache) Set(key string, value interface{}) {
-	c.cache.Set(key, value_wrapper.NewValueWrapper(value), cache.DefaultExpiration)
+	c.cache.Set(key, valueWrapper.NewValueWrapper(value), cache.DefaultExpiration)
 }
 
-func (c *GoCache) Get(key string) *value_wrapper.ValueWrapper {
+func (c *GoCache) Get(key string) *valueWrapper.ValueWrapper {
 	if item, found := c.cache.Get(key); found {
-		vw := item.(*value_wrapper.ValueWrapper)
+		vw := item.(*valueWrapper.ValueWrapper)
 		vw.UpdateCacheStatus()
 		vw.UpdateAccessTime()
 		vw.UpdateWriteTime()
@@ -40,10 +40,10 @@ func (c *GoCache) Get(key string) *value_wrapper.ValueWrapper {
 	}
 }
 
-func (c *GoCache) GetValues() []*value_wrapper.ValueWrapper {
-	var values []*value_wrapper.ValueWrapper
+func (c *GoCache) GetValues() []*valueWrapper.ValueWrapper {
+	var values []*valueWrapper.ValueWrapper
 	for _, item := range c.cache.Items() {
-		values = append(values, item.Object.(*value_wrapper.ValueWrapper))
+		values = append(values, item.Object.(*valueWrapper.ValueWrapper))
 	}
 	return values
 }

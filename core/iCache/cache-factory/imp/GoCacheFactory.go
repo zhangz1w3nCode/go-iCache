@@ -15,5 +15,5 @@ func (f *GoCacheFactory) Support(cacheType string) bool {
 }
 
 func (f *GoCacheFactory) GetCache(config *cacheConfig.GoCacheConfig) cache.ICache {
-	return go_cache.NewGoCache(config)
+	return goCache.NewGoCache(config)
 }
