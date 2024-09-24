@@ -85,6 +85,11 @@ func (c *GoCache) GetCacheMetrics() *cacheMetrics.CacheMetrics {
 	metrics := c.cacheMetrics
 	metrics.CacheCurrentKeyCount = int64(c.cache.ItemCount())
 	metrics.CacheSize = int64(unsafe.Sizeof(c.cache))
+	if metrics.CacheQueryCount == 0 {
+		metrics.CacheHitRate = 0
+		metrics.CacheMissRate = 0
+		return metrics
+	}
 	metrics.CacheHitRate = float32(metrics.CacheHitCount / metrics.CacheQueryCount)
 	metrics.CacheMissRate = float32(metrics.CacheMissCount / metrics.CacheQueryCount)
 	return metrics
