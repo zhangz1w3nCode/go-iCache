@@ -61,3 +61,29 @@ func (m *MonitorLogic) GetValueToCacheUser(cacheName string, cacheKey string) (s
 	}
 	return valueStr, nil
 }
+
+// GetCacheMetrics 	获取缓存的指标
+func (m *MonitorLogic) GetCacheMetrics(cacheName string) (*monitorpb.CacheMetrics, error) {
+	cache := m.manager.GetCache(cacheName)
+	if cache == nil {
+		return nil, status.Errorf(codes.Unavailable, "Get cache "+cacheName+" from cache cache-manager error!")
+	}
+	cacheMetrics := cache.GetCacheMetrics()
+	if cacheMetrics == nil {
+		return nil, nil
+	}
+
+	metrics := &monitorpb.CacheMetrics{
+		CacheName:            cacheName,
+		CacheSize:            cacheMetrics.CacheSize,
+		CacheHitCount:        cacheMetrics.CacheHitCount,
+		CacheMissCount:       cacheMetrics.CacheMissCount,
+		CacheQueryCount:      cacheMetrics.CacheQueryCount,
+		CacheCurrentKeyCount: cacheMetrics.CacheCurrentKeyCount,
+		CacheMaxCount:        cacheMetrics.CacheMaxCount,
+		CacheHitRate:         cacheMetrics.CacheHitRate,
+		CacheMissRate:        cacheMetrics.CacheMissRate,
+	}
+
+	return metrics, nil
+}

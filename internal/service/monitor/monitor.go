@@ -47,3 +47,13 @@ func (m *MonitorService) GetValueToCacheUser(ctx context.Context, req *monitorpb
 
 	return &monitorpb.GetValueToCacheUserResponse{CacheValue: cacheNameList}, nil
 }
+
+func (m *MonitorService) GetCacheMetrics(ctx context.Context, req *monitorpb.GetCacheMetricsRequest) (*monitorpb.GetCacheMetricsResponse, error) {
+	cacheMetrics, err := m.monitorLogic.GetCacheMetrics(req.GetCacheName())
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &monitorpb.GetCacheMetricsResponse{CacheMetrics: cacheMetrics}, nil
+}

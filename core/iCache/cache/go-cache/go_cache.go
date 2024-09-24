@@ -2,42 +2,53 @@ package goCache
 
 import (
 	"github.com/patrickmn/go-cache"
-	cache2 "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache"
 	cacheConfig "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache-config"
+	cacheMetrics "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache/cache-metrics"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/cache/value-wrapper"
 	"log"
+	"unsafe"
 )
 
 // GoCache go-cache缓存
 type GoCache struct {
-	name  string
-	cache *cache.Cache
+	cacheName    string
+	cache        *cache.Cache
+	cacheMetrics *cacheMetrics.CacheMetrics
 }
 
 // NewGoCache 创建一个新的GoCache实例
 func NewGoCache(cacheConfig *cacheConfig.GoCacheConfig) *GoCache {
 	return &GoCache{
-		name:  cacheConfig.CacheName,
-		cache: cache.New(cacheConfig.ExpireTime, cacheConfig.CleanTime),
+		cacheName:    cacheConfig.CacheName,
+		cache:        cache.New(cacheConfig.ExpireTime, cacheConfig.CleanTime),
+		cacheMetrics: cacheMetrics.NewCacheMetrics(cacheConfig.CacheMaxCount),
 	}
 }
 
 func (c *GoCache) Set(key string, value interface{}) {
+	if c.cache.ItemCount() >= int(c.cacheMetrics.CacheMaxCount) {
+		log.Printf("cache is full, key: %s", key)
+		return
+	}
 	c.cache.Set(key, valueWrapper.NewValueWrapper(value), cache.DefaultExpiration)
 }
 
 func (c *GoCache) Get(key string) *valueWrapper.ValueWrapper {
-	if item, found := c.cache.Get(key); found {
+	defer func() {
+		c.cacheMetrics.CacheQueryCount++
+	}()
+	item, found := c.cache.Get(key)
+	if found {
 		vw := item.(*valueWrapper.ValueWrapper)
+		c.cacheMetrics.CacheHitCount++
 		vw.UpdateCacheStatus()
 		vw.UpdateAccessTime()
 		vw.UpdateWriteTime()
 		return vw
 	} else {
-		//cacheMiss
-		log.Printf("cache miss key: %s", key)
-		return nil
+		c.cacheMetrics.CacheMissCount++
 	}
+	return nil
 }
 
 func (c *GoCache) GetValues() []*valueWrapper.ValueWrapper {
@@ -56,20 +67,25 @@ func (c *GoCache) GetKeys() []string {
 	return keys
 }
 
-func (c *GoCache) Size() int {
+func (c *GoCache) CacheNum() int {
 	return c.cache.ItemCount()
 }
 
 func (c *GoCache) GetName() string {
-	return c.name
+	return c.cacheName
 }
 
-func (c *GoCache) CalculateMemoryUsage() float64 {
-	// This is a simplified version and does not calculate actual memory usage
-	return float64(c.Size())
+// GetCacheValuesStatus 统计缓存值状态
+func (c *GoCache) GetCacheValuesStatus() []*valueWrapper.CacheValueStatus {
+	return nil
 }
 
-func (c *GoCache) GetCacheStatus() cache2.CacheStats {
-	// This is a simplified version and does not provide real cache statistics
-	return cache2.CacheStats{}
+// GetCacheMetrics 统计缓存状态
+func (c *GoCache) GetCacheMetrics() *cacheMetrics.CacheMetrics {
+	metrics := c.cacheMetrics
+	metrics.CacheCurrentKeyCount = int64(c.cache.ItemCount())
+	metrics.CacheSize = int64(unsafe.Sizeof(c.cache))
+	metrics.CacheHitRate = float32(metrics.CacheHitCount / metrics.CacheQueryCount)
+	metrics.CacheMissRate = float32(metrics.CacheMissCount / metrics.CacheQueryCount)
+	return metrics
 }

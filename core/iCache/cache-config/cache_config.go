@@ -24,6 +24,8 @@ type GoCacheConfig struct {
 	CacheName string
 	//缓存类型
 	CacheType string
+	//缓存的最大大小
+	CacheMaxCount int64
 	//过期时间
 	ExpireTime time.Duration
 	//清理时间

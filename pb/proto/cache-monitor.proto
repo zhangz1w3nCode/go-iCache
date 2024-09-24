@@ -20,6 +20,8 @@ service CacheMonitorService {
 
   //查询某个缓存的某个key的value
   rpc GetValueToCacheUser (GetValueToCacheUserRequest) returns (GetValueToCacheUserResponse) {}
+  //查询某个缓存的指标信息
+  rpc GetCacheMetrics (GetCacheMetricsRequest) returns (GetCacheMetricsResponse) {}
 }
 
 message GetCacheUserAddressListRequest {
@@ -66,3 +68,26 @@ message GetValueToCacheUserRequest {
 message GetValueToCacheUserResponse {
   string CacheValue=1;
 }
+
+message GetCacheMetricsRequest {
+  string CacheName=1;
+}
+
+
+message GetCacheMetricsResponse {
+  CacheMetrics cacheMetrics=1;
+}
+
+
+message CacheMetrics {
+  string CacheName=1;
+  int64 CacheSize=2;
+  int64 CacheHitCount=3;
+  int64 CacheMissCount=4;
+  int64 CacheQueryCount=5;
+  int64 CacheCurrentKeyCount=9;
+  int64 CacheMaxCount=6;
+  float CacheHitRate=7;
+  float CacheMissRate=8;
+}
+
