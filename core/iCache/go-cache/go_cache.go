@@ -29,9 +29,7 @@ func (c *GoCache) Set(key string, value interface{}) {
 func (c *GoCache) Get(key string) *value_wrapper.ValueWrapper {
 	if item, found := c.cache.Get(key); found {
 		vw := item.(*value_wrapper.ValueWrapper)
-		currentStatus := vw.CacheStatus
-		currentStatus.CacheQuery++
-		currentStatus.CacheHit++
+		vw.UpdateCacheStatus()
 		vw.UpdateAccessTime()
 		vw.UpdateWriteTime()
 		return vw

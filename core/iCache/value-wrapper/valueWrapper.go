@@ -47,6 +47,9 @@ func (vw *ValueWrapper) UpdateWriteTime() {
 }
 
 // UpdateCacheStatus 更新缓存状态
-func (vw *ValueWrapper) UpdateCacheStatus(cacheStatus *CacheStatus) {
-	vw.CacheStatus = cacheStatus
+func (vw *ValueWrapper) UpdateCacheStatus() {
+	currentStatus := vw.CacheStatus
+	currentStatus.CacheQuery++
+	currentStatus.CacheHit++
+	currentStatus.CacheCurrentSize++
 }
