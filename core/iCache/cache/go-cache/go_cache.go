@@ -90,7 +90,7 @@ func (c *GoCache) GetCacheMetrics() *cacheMetrics.CacheMetrics {
 		metrics.CacheMissRate = 0
 		return metrics
 	}
-	metrics.CacheHitRate = float32(metrics.CacheHitCount / metrics.CacheQueryCount)
-	metrics.CacheMissRate = float32(metrics.CacheMissCount / metrics.CacheQueryCount)
+	metrics.CacheHitRate = float32(metrics.CacheHitCount) / float32(metrics.CacheQueryCount)
+	metrics.CacheMissRate = float32(metrics.CacheMissCount) / float32(metrics.CacheQueryCount)
 	return metrics
 }
