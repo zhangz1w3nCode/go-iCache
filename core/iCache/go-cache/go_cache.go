@@ -6,6 +6,8 @@ import (
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/config"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/value-wrapper"
 	"log"
+	"strconv"
+	"unsafe"
 )
 
 // GoCache go-cache缓存
@@ -29,6 +31,8 @@ func (c *GoCache) Set(key string, value interface{}) {
 func (c *GoCache) Get(key string) *value_wrapper.ValueWrapper {
 	if item, found := c.cache.Get(key); found {
 		vw := item.(*value_wrapper.ValueWrapper)
+		str := int64(unsafe.Sizeof(vw.Data))
+		log.Printf(strconv.FormatInt(str, 10))
 		vw.UpdateCacheStatus()
 		vw.UpdateAccessTime()
 		vw.UpdateWriteTime()
