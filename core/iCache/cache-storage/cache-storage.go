@@ -18,7 +18,7 @@ const (
 	// BatchSize 批量插入的数量
 	BatchSize = 1000
 	// SemaphoreSize 并发数量
-	SemaphoreSize = 100
+	SemaphoreSize = 10
 )
 
 func CacheStorage(cacheInit *cacheInit.CacheInit, serviceName, serviceAddress string) {
