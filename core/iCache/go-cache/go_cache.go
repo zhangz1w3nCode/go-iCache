@@ -5,6 +5,7 @@ import (
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/config"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/value-wrapper"
+	"log"
 )
 
 // GoCache go-cache缓存
@@ -28,11 +29,17 @@ func (c *GoCache) Set(key string, value interface{}) {
 func (c *GoCache) Get(key string) *value_wrapper.ValueWrapper {
 	if item, found := c.cache.Get(key); found {
 		vw := item.(*value_wrapper.ValueWrapper)
+		currentStatus := vw.CacheStatus
+		currentStatus.CacheQuery++
+		currentStatus.CacheHit++
 		vw.UpdateAccessTime()
 		vw.UpdateWriteTime()
 		return vw
+	} else {
+		//cacheMiss
+		log.Printf("cache miss key: %s", key)
+		return nil
 	}
-	return nil
 }
 
 func (c *GoCache) GetValues() []*value_wrapper.ValueWrapper {
