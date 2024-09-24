@@ -54,6 +54,5 @@ func (vw *ValueWrapper) UpdateCacheStatus() {
 	currentStatus := vw.CacheStatus
 	currentStatus.CacheQuery++
 	currentStatus.CacheHit++
-	currentStatus.CacheCurrentNum++
-	currentStatus.CacheSize = int64(unsafe.Sizeof(&vw.Data))
+	currentStatus.CacheSize = int64(unsafe.Sizeof(vw.Data))
 }
