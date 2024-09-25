@@ -1,7 +1,7 @@
 package cache
 
 import (
-	cacheStatus "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache/cache-metrics"
+	cacheMetrics "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache/cache-metrics"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/cache/value-wrapper"
 )
 
@@ -13,6 +13,6 @@ type ICache interface {
 	GetKeys() []string
 	CacheNum() int
 	GetName() string
-	GetCacheValuesStatus() []*valueWrapper.CacheValueStatus
-	GetCacheMetrics() *cacheStatus.CacheMetrics
+	GetCacheValuesStatus() []*cacheMetrics.CacheValueMetrics
+	GetCacheMetrics() *cacheMetrics.CacheMetrics
 }

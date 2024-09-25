@@ -6,6 +6,7 @@ import (
 	cacheMetrics "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache/cache-metrics"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/cache/value-wrapper"
 	"log"
+	"sync/atomic"
 	"unsafe"
 )
 
@@ -35,18 +36,18 @@ func (c *GoCache) Set(key string, value interface{}) {
 
 func (c *GoCache) Get(key string) *valueWrapper.ValueWrapper {
 	defer func() {
-		c.cacheMetrics.CacheQueryCount++
+		atomic.AddInt64(&c.cacheMetrics.CacheQueryCount, 1)
 	}()
 	item, found := c.cache.Get(key)
 	if found {
 		vw := item.(*valueWrapper.ValueWrapper)
-		c.cacheMetrics.CacheHitCount++
-		vw.UpdateCacheStatus()
+		atomic.AddInt64(&c.cacheMetrics.CacheHitCount, 1)
+		vw.UpdateCacheValueMetrics()
 		vw.UpdateAccessTime()
 		vw.UpdateWriteTime()
 		return vw
 	} else {
-		c.cacheMetrics.CacheMissCount++
+		atomic.AddInt64(&c.cacheMetrics.CacheMissCount, 1)
 	}
 	return nil
 }
@@ -76,7 +77,7 @@ func (c *GoCache) GetName() string {
 }
 
 // GetCacheValuesStatus 统计缓存值状态
-func (c *GoCache) GetCacheValuesStatus() []*valueWrapper.CacheValueStatus {
+func (c *GoCache) GetCacheValuesStatus() []*cacheMetrics.CacheValueMetrics {
 	return nil
 }
 
@@ -90,7 +91,7 @@ func (c *GoCache) GetCacheMetrics() *cacheMetrics.CacheMetrics {
 		metrics.CacheMissRate = 0
 		return metrics
 	}
-	metrics.CacheHitRate = float32(metrics.CacheHitCount) / float32(metrics.CacheQueryCount)
-	metrics.CacheMissRate = float32(metrics.CacheMissCount) / float32(metrics.CacheQueryCount)
+	metrics.CacheHitRate = (float32(metrics.CacheHitCount) / float32(metrics.CacheQueryCount)) * float32(100)
+	metrics.CacheMissRate = float32(metrics.CacheMissCount) / float32(metrics.CacheQueryCount) * float32(100)
 	return metrics
 }
