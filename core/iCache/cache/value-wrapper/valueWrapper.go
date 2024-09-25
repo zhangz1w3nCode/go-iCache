@@ -27,7 +27,7 @@ func NewValueWrapper(data interface{}) *ValueWrapper {
 
 // UpdateAccessTime 更新最后访问时间
 func (vw *ValueWrapper) UpdateAccessTime() {
-	vw.AccessTime = time.Now().UnixMicro()
+	vw.AccessTime = time.Now().Unix()
 }
 
 // UpdateWriteTime 更新最后写入时间
