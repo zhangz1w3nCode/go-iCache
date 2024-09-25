@@ -10,8 +10,8 @@ import (
 // ValueWrapper 缓存的数据包装类
 type ValueWrapper struct {
 	Data              interface{}                     // 缓存的数据
-	WriteTime         int                             // 缓存写入时间
-	AccessTime        int                             // 缓存最后访问时间
+	WriteTime         int64                           // 缓存写入时间
+	AccessTime        int64                           // 缓存最后访问时间
 	CacheValueMetrics *cacheMetrics.CacheValueMetrics // 缓存状态
 }
 
@@ -19,20 +19,20 @@ type ValueWrapper struct {
 func NewValueWrapper(data interface{}) *ValueWrapper {
 	return &ValueWrapper{
 		Data:              data,
-		WriteTime:         time.Now().Second(),
-		AccessTime:        time.Now().Second(),
+		WriteTime:         time.Now().Unix(),
+		AccessTime:        time.Now().Unix(),
 		CacheValueMetrics: cacheMetrics.NewCacheValueMetrics(),
 	}
 }
 
 // UpdateAccessTime 更新最后访问时间
 func (vw *ValueWrapper) UpdateAccessTime() {
-	vw.AccessTime = time.Now().Second()
+	vw.AccessTime = time.Now().UnixMicro()
 }
 
 // UpdateWriteTime 更新最后写入时间
 func (vw *ValueWrapper) UpdateWriteTime() {
-	vw.WriteTime = time.Now().Second()
+	vw.WriteTime = time.Now().Unix()
 }
 
 // UpdateCacheValueMetrics 更新缓存状态

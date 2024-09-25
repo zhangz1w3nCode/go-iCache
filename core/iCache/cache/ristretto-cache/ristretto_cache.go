@@ -1,5 +1,6 @@
 package ristrettoCache
 
+/*
 import (
 	cache "github.com/dgraph-io/ristretto"
 	cache2 "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache"
@@ -98,3 +99,4 @@ func (c *RistrettoCache) GetCacheStatus() cache2.CacheStats {
 		Ratio:       ratio,
 	}
 }
+*/
