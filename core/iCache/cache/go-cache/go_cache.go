@@ -2,6 +2,7 @@ package goCache
 
 import (
 	"github.com/patrickmn/go-cache"
+	"github.com/spf13/viper"
 	cacheConfig "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache-config"
 	cacheMetrics "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache/cache-metrics"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/cache/value-wrapper"
@@ -22,12 +23,12 @@ func NewGoCache(cacheConfig *cacheConfig.GoCacheConfig) *GoCache {
 	return &GoCache{
 		cacheName:    cacheConfig.CacheName,
 		cache:        cache.New(cacheConfig.ExpireTime, cacheConfig.CleanTime),
-		cacheMetrics: cacheMetrics.NewCacheMetrics(cacheConfig.CacheMaxCount),
+		cacheMetrics: cacheMetrics.NewCacheMetrics(viper.GetInt64("config.cache.cache_max_count")),
 	}
 }
 
 func (c *GoCache) Set(key string, value interface{}) {
-	if c.cache.ItemCount() >= int(c.cacheMetrics.CacheMaxCount) {
+	if c.cache.ItemCount() >= int(viper.GetInt64("config.cache.cache_max_count")) {
 		log.Printf("cache is full, key: %s", key)
 		return
 	}
