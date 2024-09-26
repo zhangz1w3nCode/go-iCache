@@ -3,7 +3,6 @@ module github.com/zhangz1w3nCode/go-iCache
 go 1.23.0
 
 require (
-	github.com/dgraph-io/ristretto v0.1.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/spf13/viper v1.19.0
 	go.etcd.io/etcd/api/v3 v3.5.16
@@ -21,17 +20,14 @@ require (
 	cloud.google.com/go/firestore v1.15.0 // indirect
 	cloud.google.com/go/longrunning v0.5.5 // indirect
 	github.com/armon/go-metrics v0.4.1 // indirect
-	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
-	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/fatih/color v1.14.1 // indirect
 	github.com/felixge/httpsnoop v1.0.4 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/go-logr/logr v1.4.1 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/golang/glog v1.2.1 // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
 	github.com/google/s2a-go v0.1.7 // indirect

@@ -1,4 +1,4 @@
-package cacheMetrics
+package metrics
 
 // CacheValueMetrics 整个缓存的状态
 type CacheValueMetrics struct {
