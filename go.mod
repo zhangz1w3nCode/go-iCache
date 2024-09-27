@@ -12,7 +12,11 @@ require (
 	gopkg.in/yaml.v3 v3.0.1
 )
 
-require github.com/go-sql-driver/mysql v1.7.0 // indirect
+require (
+	github.com/go-sql-driver/mysql v1.7.0 // indirect
+	github.com/rfyiamcool/go-timewheel v1.1.0 // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
+)
 
 require (
 	cloud.google.com/go v0.112.1 // indirect

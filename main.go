@@ -19,7 +19,7 @@ func main() {
 		CleanTime:     20 * time.Minute,
 	})
 
-	for i := 0; i < 499; i++ {
+	for i := 0; i < 600; i++ {
 		cache.Set(fmt.Sprintf("user-%d", i), i)
 	}
 
@@ -33,8 +33,10 @@ func main() {
 
 	userCacheMonitor := monitor.NewCacheMonitor(5*time.Second, manager, "user-cache")
 
-	err := userCacheMonitor.Start()
-	if err != nil {
-		return
+	go userCacheMonitor.Start()
+
+	for k := 0; true; k++ {
+		fmt.Println(k)
+		time.Sleep(1 * time.Second)
 	}
 }

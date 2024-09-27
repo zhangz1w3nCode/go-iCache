@@ -58,20 +58,20 @@ func (c *MetricCollector) Collect(metric *cacheMcs.CacheMetrics, wg *sync.WaitGr
 }
 
 // CollectCacheKeyCount 收集指标
-func (c *MetricCollector) CollectCacheKeyCount(metric *cacheMcs.CacheMetrics, wg *sync.WaitGroup, limit int64, thresholdRate float64, thresholdRateHistory float64) error {
+func (c *MetricCollector) CollectCacheKeyCount(metric *cacheMcs.CacheMetrics, limit int64, thresholdRate float64, thresholdRateHistory float64) error {
 	//get pre node
 	if len(c.History) <= 0 {
 		log.Fatalf("pre node is nil")
 	}
 	//at lease one
 	preNode := c.History[len(c.History)-1]
-	//探测 cache hit count
+	//detect cache hit count
 	err := detect(preNode.CacheCurrentKeyCount, metric.CacheCurrentKeyCount, limit, metric.CacheMaxCount, thresholdRate, thresholdRateHistory)
 	if err != nil {
 		log.Printf("detect cache key count metrics error: %s", err.Error())
 		return nil
 	}
-	//add history
+	//add history array
 	c.addToHistoryArray(metric)
 
 	return nil
@@ -140,9 +140,14 @@ func detect(preVal int64, current int64, limit int64, all int64, thresholdRate f
 		return errors.New("monitor metric current value owner rate more than thresholdRate")
 	}
 
-	// 基于前一个收集到的指标的判断
-	if (float64(current-preVal)/float64(preVal)) >= thresholdRateHistory || (float64(current+preVal)/float64(preVal)) >= thresholdRateHistory {
-		return errors.New("monitor metric current value has increment or decrement more than thresholdRateHistory")
+	// 比之前的指标 增长或下降 超过阈值
+	if (float64(current-preVal) / float64(preVal)) >= thresholdRateHistory {
+		return errors.New("monitor metric current value has increment more than thresholdRateHistory")
+	}
+
+	// 比之前的指标 增长或下降 超过阈值
+	if (float64(current+preVal) / float64(preVal)) >= thresholdRateHistory {
+		return errors.New("monitor metric current value has  decrement more than thresholdRateHistory")
 	}
 
 	return nil
