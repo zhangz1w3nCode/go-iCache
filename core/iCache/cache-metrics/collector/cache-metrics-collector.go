@@ -84,9 +84,21 @@ func (c *MetricCollector) CollectCacheHitCount(metric *cacheMcs.CacheMetrics, wg
 		log.Fatalf("pre node is nil")
 	}
 	//at lease one
+	currentNodeCount := len(c.History) - 1
+
+	//v1 参考前一个节点的值
 	preNode := c.History[len(c.History)-1]
+
+	//v2 参考前n个节点的某个指标的平均值
+	avgMetric := int64(0)
+	sumMetric := int64(0)
+	for i := 0; i < currentNodeCount; i++ {
+		sumMetric += preNode.CacheHitCount
+	}
+	avgMetric = sumMetric / int64(currentNodeCount)
+
 	//探测 cache hit count
-	err := detect(preNode.CacheHitCount, metric.CacheHitCount, limit, metric.CacheQueryCount, thresholdRate, thresholdRateHistory)
+	err := detect(avgMetric, metric.CacheHitCount, limit, metric.CacheQueryCount, thresholdRate, thresholdRateHistory)
 	if err != nil {
 		log.Printf("detect cache hit count metrics error: %s", err.Error())
 		return nil
