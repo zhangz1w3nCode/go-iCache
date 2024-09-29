@@ -3,6 +3,7 @@ package monitor
 import (
 	cacheManager "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache-manager"
 	"github.com/zhangz1w3nCode/go-iCache/core/iCache/cache-metrics/collector"
+	"github.com/zhangz1w3nCode/go-iCache/core/iCache/cache-metrics/metrics"
 	goCache "github.com/zhangz1w3nCode/go-iCache/core/iCache/cache/go-cache"
 	"log"
 	"time"
@@ -26,10 +27,6 @@ func NewCacheMonitor(frequency time.Duration, manager *cacheManager.CacheManager
 }
 
 func (c *CacheMonitor) Start() {
-	//初始化
-	c.cacheCollector.InitCollection(c.cacheName)
-
-	// 启动定时器
 	c.ticker = time.NewTicker(c.frequency)
 	defer c.ticker.Stop()
 
@@ -55,6 +52,8 @@ func (c *CacheMonitor) MonitorTask() {
 	// 调用每个缓存的监控方法得到监控指标的来源
 	metric := cacheInstance.GetCacheMetrics()
 	// 进入指标采集
-	_ = c.cacheCollector.CollectCacheKeyCount(metric, 1000, 0.5, 0.3)
+	_ = c.cacheCollector.CollectCacheKeyCount(metric, 1000, 0.5, 0.3, func(m interface{}) float64 {
+		return float64(m.(*metrics.CacheMetrics).CacheCurrentKeyCount) // 获取浮点数属性
+	})
 	// _ = c.cacheCollector.CollectCacheHitCount(metric, nil, 10000, 0.8, 0.25)
 }

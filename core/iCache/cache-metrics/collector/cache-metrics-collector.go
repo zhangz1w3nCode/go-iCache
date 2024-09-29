@@ -32,82 +32,54 @@ func NewMetricCollector(manager *cacheManager.CacheManager, cycle time.Duration,
 	}
 }
 
-// Collect 收集指标
-func (c *MetricCollector) Collect(metric *cacheMcs.CacheMetrics, wg *sync.WaitGroup) error {
-	//get pre node
-	if len(c.History) <= 0 {
-		log.Fatalf("pre node is nil")
-	}
-	//at lease one
-	preNode := c.History[len(c.History)-1]
-	//metrics rule match
-	CacheKeyCountErr := preNode.DetectCacheKeyCount(preNode, 80, 0.8, 0.25)
-	CacheQueryCountErr := preNode.DetectCacheQueryCount(preNode, 80, 0.8, 0.25)
-
-	if CacheKeyCountErr != nil {
-		log.Printf("detect cache key count metrics error: %s", CacheKeyCountErr.Error())
-	}
-	if CacheQueryCountErr != nil {
-		log.Printf("detect cache query count metrics error: %s", CacheQueryCountErr.Error())
-	}
-
-	//add history
-	c.addToHistoryArray(metric)
-
-	return nil
-}
-
 // CollectCacheKeyCount 收集指标
-func (c *MetricCollector) CollectCacheKeyCount(metric *cacheMcs.CacheMetrics, limit int64, thresholdRate float64, thresholdRateHistory float64) error {
-	//get pre node
-	if len(c.History) <= 0 {
-		log.Fatalf("pre node is nil")
-	}
-	//at lease one
-	preNode := c.History[len(c.History)-1]
-	//detect cache hit count
-	err := detect(preNode.CacheCurrentKeyCount, metric.CacheCurrentKeyCount, limit, metric.CacheMaxCount, thresholdRate, thresholdRateHistory)
-	if err != nil {
-		log.Printf("detect cache key count metrics error: %s", err.Error())
-		return nil
-	}
-	//add history array
-	c.addToHistoryArray(metric)
+func (c *MetricCollector) CollectCacheKeyCount(metric *cacheMcs.CacheMetrics,
+	limit int64, thresholdRate float64,
+	thresholdRateHistory float64, getter cacheMcs.CacheMetricsGetter) error {
 
+	if len(c.History) != 0 {
+		currentNodeCount := len(c.History)
+		// 参考前n个节点的某个指标的平均值
+		avgMetric := float64(0)
+		sumMetric := float64(0)
+		for _, value := range c.History {
+			sumMetric += getter(value)
+		}
+		avgMetric = sumMetric / float64(currentNodeCount)
+		err := detect(avgMetric, metric.CacheCurrentKeyCount, limit, metric.CacheMaxCount, thresholdRate, thresholdRateHistory)
+		if err != nil {
+			log.Printf("detect cache key count metrics error: %s", err.Error())
+			return err
+		}
+	}
+	c.addToHistoryArray(metric)
 	return nil
 }
 
-// CollectCacheHitCount 收集指标
-func (c *MetricCollector) CollectCacheHitCount(metric *cacheMcs.CacheMetrics, wg *sync.WaitGroup, limit int64, thresholdRate float64, thresholdRateHistory float64) error {
-	//get pre node
-	if len(c.History) <= 0 {
-		log.Fatalf("pre node is nil")
-	}
-	//at lease one
-	currentNodeCount := len(c.History) - 1
-
-	//v1 参考前一个节点的值
-	preNode := c.History[len(c.History)-1]
-
-	//v2 参考前n个节点的某个指标的平均值
-	avgMetric := int64(0)
-	sumMetric := int64(0)
-	for i := 0; i < currentNodeCount; i++ {
-		sumMetric += preNode.CacheHitCount
-	}
-	avgMetric = sumMetric / int64(currentNodeCount)
-
-	//探测 cache hit count
-	err := detect(avgMetric, metric.CacheHitCount, limit, metric.CacheQueryCount, thresholdRate, thresholdRateHistory)
-	if err != nil {
-		log.Printf("detect cache hit count metrics error: %s", err.Error())
-		return nil
-	}
-	//add history
-	c.addToHistoryArray(metric)
-
-	return nil
-}
+//// CollectCacheHitCount 收集指标
+//func (c *MetricCollector) CollectCacheHitCount(metric *cacheMcs.CacheMetrics, wg *sync.WaitGroup, limit int64, thresholdRate float64, thresholdRateHistory float64) error {
+//	if len(c.History) != 0 {
+//		//at lease one
+//		currentNodeCount := len(c.History)
+//
+//		//v2 参考前n个节点的某个指标的平均值
+//		avgMetric := int64(0)
+//		sumMetric := int64(0)
+//
+//		//todo: 这里可以优化 使用前缀和 不需要每次都重复计算
+//		for i := 0; i < currentNodeCount; i++ {
+//			sumMetric += c.History[i].CacheHitCount
+//		}
+//		avgMetric = sumMetric / float64(currentNodeCount)
+//		err := detect(avgMetric, metric.CacheHitCount, limit, metric.CacheMaxCount, thresholdRate, thresholdRateHistory)
+//		if err != nil {
+//			log.Printf("detect Cache Hit Count metrics error: %s", err.Error())
+//			return err
+//		}
+//	}
+//	c.addToHistoryArray(metric)
+//	return nil
+//}
 
 func (c *MetricCollector) InitCollection(cacheName string) {
 	//初始化：每3秒 采集一次指标 采集10次 作为初始化的队列 填满历史数组
@@ -141,7 +113,7 @@ func (c *MetricCollector) addToHistoryArray(metrics *cacheMcs.CacheMetrics) {
 }
 
 // Detect 检测 metric是否超过阈值
-func detect(preVal int64, current int64, limit int64, all int64, thresholdRate float64, thresholdRateHistory float64) error {
+func detect(avg float64, current int64, limit int64, all int64, thresholdRate float64, thresholdRateHistory float64) error {
 	// 基于数量
 	if current > limit { // 假设阈值为10000
 		return errors.New("monitor metric current value more than limit")
@@ -153,12 +125,12 @@ func detect(preVal int64, current int64, limit int64, all int64, thresholdRate f
 	}
 
 	// 比之前的指标 增长或下降 超过阈值
-	if (float64(current-preVal) / float64(preVal)) >= thresholdRateHistory {
+	if (float64(current) - avg/avg) >= thresholdRateHistory {
 		return errors.New("monitor metric current value has increment more than thresholdRateHistory")
 	}
 
 	// 比之前的指标 增长或下降 超过阈值
-	if (float64(current+preVal) / float64(preVal)) >= thresholdRateHistory {
+	if (float64(current) + avg/avg) >= thresholdRateHistory {
 		return errors.New("monitor metric current value has  decrement more than thresholdRateHistory")
 	}
 
