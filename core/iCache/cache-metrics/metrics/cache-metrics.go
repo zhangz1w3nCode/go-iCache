@@ -1,12 +1,7 @@
 package metrics
 
-import (
-	"sync"
-)
-
 // CacheMetrics 整个缓存的状态
 type CacheMetrics struct {
-	mu                   sync.Mutex
 	CacheMaxCount        int64
 	CacheCurrentKeyCount int64
 	CacheSize            int64
@@ -28,4 +23,5 @@ func NewCacheMetrics(cacheMaxCount int64) *CacheMetrics {
 	}
 }
 
-type CacheMetricsGetter func(interface{}) float64
+// CacheMetricsChanger 指标选择器：选择计算哪个指标
+type CacheMetricsChanger func(interface{}) float64

@@ -52,8 +52,9 @@ func (c *CacheMonitor) MonitorTask() {
 	// 调用每个缓存的监控方法得到监控指标的来源
 	metric := cacheInstance.GetCacheMetrics()
 	// 进入指标采集
-	_ = c.cacheCollector.CollectCacheKeyCount(metric, 1000, 0.5, 0.3, func(m interface{}) float64 {
-		return float64(m.(*metrics.CacheMetrics).CacheCurrentKeyCount) // 获取浮点数属性
-	})
+	_ = c.cacheCollector.CollectCacheKeyCount(metric, 1000, 0.8, 0.3,
+		func(m interface{}) float64 {
+			return float64(m.(*metrics.CacheMetrics).CacheCurrentKeyCount) // 获取浮点数属性
+		})
 	// _ = c.cacheCollector.CollectCacheHitCount(metric, nil, 10000, 0.8, 0.25)
 }

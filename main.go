@@ -15,8 +15,8 @@ func main() {
 		CacheName:     "user-cache",
 		CacheType:     "go-cache",
 		CacheMaxCount: 1000,
-		ExpireTime:    20 * time.Minute,
-		CleanTime:     20 * time.Minute,
+		ExpireTime:    20 * time.Second,
+		CleanTime:     20 * time.Second,
 	})
 
 	for i := 0; i < 600; i++ {
@@ -31,7 +31,7 @@ func main() {
 		cache.Get(fmt.Sprintf("user-%d", i*200))
 	}
 
-	userCacheMonitor := monitor.NewCacheMonitor(5*time.Second, manager, "user-cache")
+	userCacheMonitor := monitor.NewCacheMonitor(1*time.Second, manager, "user-cache")
 
 	go userCacheMonitor.Start()
 
