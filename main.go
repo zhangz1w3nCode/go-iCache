@@ -19,16 +19,11 @@ func main() {
 		CleanTime:     20 * time.Second,
 	})
 
-	for i := 0; i < 600; i++ {
+	for i := 0; i < 500; i++ {
 		cache.Set(fmt.Sprintf("user-%d", i), i)
 	}
-
-	for i := 0; i < 2; i++ {
+	for i := 0; i < 900; i++ {
 		cache.Get(fmt.Sprintf("user-%d", i))
-	}
-
-	for i := 1; i < 5; i++ {
-		cache.Get(fmt.Sprintf("user-%d", i*200))
 	}
 
 	userCacheMonitor := monitor.NewCacheMonitor(1*time.Second, manager, "user-cache")
