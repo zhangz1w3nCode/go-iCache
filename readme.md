@@ -1,24 +1,36 @@
-## visual-state-machine-flow💤
+## go-iCache💤
 
 ### 📌 Preview
-        1️⃣ visual-state-machine-flow是一款可视化状态机编排工具🔧
-
+        #️⃣ The go-iCache is core sdk for iCache.
 ### 📌 Technology stack
-        1️⃣ Go
-        
-        2️⃣ MySQL
-        
-        3️⃣ Docker
-        
-        4️⃣ Go Fsm
-        
-        5️⃣ Gorm
-       
-        6⃣️ LogicFlow
-       
-        7⃣️ Vue
-       
-        8⃣️ Gin
-       
-        9⃣️️ 
-     
+        #️⃣ Go(Basic Language)
+
+        #️⃣ Grpc(Inner service invoke)
+
+        #️⃣ Gin(Go web fast framework)
+
+        #️⃣ Cache(Go-cache,Ristretto,Redis···)
+
+        #️⃣ Goroutine(Async handle)
+
+        #️⃣ Grpool(Multi goroutine async handle batch and reduce goroutine make)
+
+        #️⃣ GoCron(Schedule work handle monitor data)
+
+        #️⃣ Gorm(Fast operate request to database:CRUD,BatchSave)
+
+        #️⃣ MySQL(Storage iCache’s snapshot info in abnormal situation)
+
+        #️⃣ Zookeeper(Kafka register center)
+
+        #️⃣ Etcd(Register user-iCache user server's metadata and Config metadata center)
+
+        #️⃣ Kafka(Async handle,Request flow peak out)
+
+        #️⃣ Vue/Vite(Front-end framework)
+
+        #️⃣ Nginx(LoadBalance Api-iCache Request)
+
+        #️⃣ Git/GitHub(Code hub and manage)
+
+        #️⃣ Docker/DockerFile/DockerCompose(Fast deploy and scale services,components)
